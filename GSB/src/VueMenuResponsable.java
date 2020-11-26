@@ -24,7 +24,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
         itemConsulter = new JMenuItem("Supprimer un produit");
         itemRechercher = new JMenuItem("Rechercher un produit");
         
-        lblVisiteur = new JLabel("ConnectÃ© en tant que " + Database.getRole(login) + " : ");
+        lblVisiteur = new JLabel("Connecté en tant que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
         lblLogin.setForeground(Color.GREEN.darker());
         

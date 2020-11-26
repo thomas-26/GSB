@@ -3,9 +3,8 @@ import java.util.ArrayList;
 
 public class Database {
 	private static Connection connexion;
-	private static PreparedStatement preparedStatement, preparedStatement2;
+	private static PreparedStatement preparedStatement;
 	private static ResultSet result, resultObjets;
-	private static int resultInsert, resultInsert2;
 		
 	/* fonction de connexion à la base de données 
 	 *   
@@ -16,7 +15,7 @@ public class Database {
 	public static void connexionBdd() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connexion = DriverManager.getConnection("jdbc:mysql://localhost/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
+			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?user=sio&password=slam");
 			connexion.createStatement();
 		}
 		
@@ -165,16 +164,15 @@ public class Database {
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @return un booléen qui contient vrai si le matériel a bien été supprimé
 	*/
-	public static boolean supprimerObjet(int id) { 
+	public static boolean supprimerObjet(int numero) { 
 		boolean etat = false;
 		try {
 			connexionBdd();
 			PreparedStatement statement = connexion.prepareStatement("delete from materiel where code = ?;");
-			statement.setInt(1, id);
+			statement.setInt(1, numero);
 			statement.executeUpdate();
-			
 			PreparedStatement statement2 = connexion.prepareStatement("delete from objet where id = ?;");
-			statement2.setInt(1, id);
+			statement2.setInt(1, numero);
 			statement2.executeUpdate();
 			etat = true;
 			deconnexionBdd();
@@ -209,55 +207,4 @@ public class Database {
 		}
 		return etat;
 	}
-	
-	/* fonction de suppression */
-	public static boolean reserverObjet(int id) {
-		boolean etat = false;
-		try {
-			connexionBdd();
-			PreparedStatement statement = connexion.prepareStatement("update objet set etat = 'non disponible' where id = ?;");
-			statement.setInt(1, id);
-			statement.executeUpdate();
-			
-			etat = true;
-			deconnexionBdd();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return etat;
-	}
-	
-	/* fonction qui ajoute un visiteur avec les données passées en paramètre */
-	public static int ajouterObjet(int id, String nom, String etat, int longueur, int largeur) {
-		try {
-			connexionBdd();
-			String rsInsert = "insert into objet (id, nom, etat) VALUES (?, ?, ?);";
-			preparedStatement = connexion.prepareStatement(rsInsert);
-
-			preparedStatement.setInt(1, id);
-			preparedStatement.setString(2, nom);
-			preparedStatement.setString(3, etat);
-
-			resultInsert = preparedStatement.executeUpdate();
-			
-			String rsInsert2 = "insert into materiel (code, longueur, largeur) VALUES (?, ?, ?);";
-			preparedStatement2 = connexion.prepareStatement(rsInsert2);
-			
-			preparedStatement2.setInt(1, id);
-			preparedStatement2.setInt(2, longueur);
-			preparedStatement2.setInt(3, largeur);
-			
-			preparedStatement2.executeUpdate();
-			
-			resultInsert2 = preparedStatement2.executeUpdate();
-			
-			deconnexionBdd();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return resultInsert + resultInsert2;
-	}
-	
-	
-	
 }

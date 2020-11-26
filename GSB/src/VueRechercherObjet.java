@@ -20,7 +20,7 @@ public class VueRechercherObjet extends JPanel implements ActionListener {
 		this.setLayout(null);
 		
 		/* texte informatif */
-		welcome = new JLabel("Rechercher un objet (numÃ©ro)");
+		welcome = new JLabel("Rechercher un objet (numéro)");
 		welcome.setFont(new Font("Arial", Font.BOLD, 14));
 		welcome.setBounds(130, 40, 380, 100);
 		
@@ -37,7 +37,7 @@ public class VueRechercherObjet extends JPanel implements ActionListener {
 		rechercherButton.setFont(new Font("Arial", Font.BOLD, 12));
 		rechercherButton.addActionListener(this);		
 
-		/* ajoute les ï¿½lï¿½ments ï¿½ notre panel */
+		/* ajoute les éléments à notre panel */
 		this.add(welcome);
 		this.add(jtfNumero);
 		this.add(rechercherButton);
@@ -52,10 +52,10 @@ public class VueRechercherObjet extends JPanel implements ActionListener {
         if(!jtfNumero.getText().equals("")) {
 		int numero =  Integer.parseInt(jtfNumero.getText());
 			if(Database.rechercherObjet(numero)) {
-				JOptionPane.showMessageDialog(rechercherButton, "Le matÃ©riel est prÃ©sent dans le catalogue !", "FÃ©licitation", JOptionPane.INFORMATION_MESSAGE);
-			}//t
+				JOptionPane.showMessageDialog(rechercherButton, "Le matériel est présent dans le catalogue !", "Félicitation", JOptionPane.INFORMATION_MESSAGE);
+			}
 			else {
-				JOptionPane.showMessageDialog(rechercherButton, "Le matÃ©riel n'existe pas dans le catalogue !", "Erreur", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(rechercherButton, "Le matériel n'existe pas dans le catalogue !", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
         }
 	}

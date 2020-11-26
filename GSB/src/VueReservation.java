@@ -5,6 +5,7 @@ import org.jdatepicker.JDatePicker;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,7 +53,7 @@ public class VueReservation extends JPanel implements ActionListener {
 		emprunterButton.setFont(new Font("Arial", Font.BOLD, 12));
 		emprunterButton.addActionListener(this);	
 		
-		/*JPanel jPanel = new JPanel();
+		JPanel jPanel = new JPanel();
 		jPanel.setBounds(50,50,500,500);
 		
 		JDatePicker picker = new JDateComponentFactory().createJDatePicker();
@@ -64,7 +65,7 @@ public class VueReservation extends JPanel implements ActionListener {
 	    picker.getModel().setMonth(1);
 	    //picker.getModel().setMonth(1);
 	    picker.getModel().setDay(15);
-	    picker.getModel().setSelected(true);*/
+	    picker.getModel().setSelected(true);
 
 		/* ajoute les éléments à notre panel */
 		this.add(welcome);
@@ -74,6 +75,8 @@ public class VueReservation extends JPanel implements ActionListener {
 		this.add(confirm);
 		
 		this.add(emprunterButton);
+		
+		this.add(jPanel);
 
 		frame.setVisible(true);
 			
