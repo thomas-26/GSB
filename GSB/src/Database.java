@@ -3,8 +3,9 @@ import java.util.ArrayList;
 
 public class Database {
 	private static Connection connexion;
-	private static PreparedStatement preparedStatement;
-	private static ResultSet result, resultObjets;
+	private static PreparedStatement preparedStatement, preparedStatement2;
+	private static ResultSet result, resultObjets, resultLibelle, resultNbLibelle;
+	private static int resultInsert, resultInsert2;
 		
 	/* fonction de connexion à la base de données 
 	 *   
@@ -15,7 +16,7 @@ public class Database {
 	public static void connexionBdd() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?user=sio&password=slam");
+			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","sio","slam");
 			connexion.createStatement();
 		}
 		
@@ -111,7 +112,7 @@ public class Database {
 		ArrayList<Materiel> lesMateriels = new ArrayList<Materiel>();
 		try {
 			connexionBdd();
-			String rsObjets = "select id, nom, longueur, largeur, etat from objet o, materiel m where m.code = id;";
+			String rsObjets = "select id, nom, longueur, largeur, codemateriel, etat from objet o, materiel m where m.code = id;";
 			preparedStatement = connexion.prepareStatement(rsObjets);
 			resultObjets = preparedStatement.executeQuery();
 			
@@ -119,10 +120,42 @@ public class Database {
 				int id = resultObjets.getInt("id");
 				String nom = resultObjets.getString("nom");
 				float longueur = resultObjets.getFloat("longueur");
+				int codeMateriel = resultObjets.getInt("codemateriel");
 				float largeur = resultObjets.getFloat("largeur");
 				String etat = resultObjets.getString("etat");
 				
-				lesMateriels.add(new Materiel(id, nom, longueur, largeur, etat));
+				lesMateriels.add(new Materiel(id, nom, longueur, largeur, etat, codeMateriel));
+			}
+			resultObjets.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesMateriels;
+	}
+	
+	/* fonction de récupération des matériels empruntés
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une lisete de matériels contenant les matériels empruntés
+	*/ 
+	public static ArrayList<Materiel> getLesMaterielsEmpruntes() {
+		ArrayList<Materiel> lesMateriels = new ArrayList<Materiel>();
+		try {
+			connexionBdd();
+			String rsObjets = "select id, nom, longueur, largeur, codemateriel, etat from objet o, materiel m where m.code = id and etat = 'emprunte';";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			resultObjets = preparedStatement.executeQuery();
+			
+			while (resultObjets.next()) {
+				int id = resultObjets.getInt("id");
+				String nom = resultObjets.getString("nom");
+				float longueur = resultObjets.getFloat("longueur");
+				int codeMateriel = resultObjets.getInt("codemateriel");
+				float largeur = resultObjets.getFloat("largeur");
+				String etat = resultObjets.getString("etat");
+				
+				lesMateriels.add(new Materiel(id, nom, longueur, largeur, etat, codeMateriel));
 			}
 			resultObjets.close();
 			deconnexionBdd();
@@ -164,15 +197,16 @@ public class Database {
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @return un booléen qui contient vrai si le matériel a bien été supprimé
 	*/
-	public static boolean supprimerObjet(int numero) { 
+	public static boolean supprimerObjet(int id) { 
 		boolean etat = false;
 		try {
 			connexionBdd();
 			PreparedStatement statement = connexion.prepareStatement("delete from materiel where code = ?;");
-			statement.setInt(1, numero);
+			statement.setInt(1, id);
 			statement.executeUpdate();
+			
 			PreparedStatement statement2 = connexion.prepareStatement("delete from objet where id = ?;");
-			statement2.setInt(1, numero);
+			statement2.setInt(1, id);
 			statement2.executeUpdate();
 			etat = true;
 			deconnexionBdd();
@@ -207,4 +241,178 @@ public class Database {
 		}
 		return etat;
 	}
+	
+	/* fonction de suppression */
+	public static boolean reserverObjet(int id) {
+		boolean etat = false;
+		try {
+			connexionBdd();
+			PreparedStatement statement = connexion.prepareStatement("update objet set etat = 'emprunte' where id = ?;");
+			statement.setInt(1, id);
+			statement.executeUpdate();
+			
+			etat = true;
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return etat;
+	}
+	
+	/* fonction qui ajoute un visiteur avec les données passées en paramètre */
+	public static int ajouterObjet(int id, String nom, String etat, int longueur, int largeur, int codeMateriel) {
+		try {
+			connexionBdd();
+			String rsInsert = "insert into objet (id, nom, etat) VALUES (?, ?, ?);";
+			preparedStatement = connexion.prepareStatement(rsInsert);
+
+			preparedStatement.setInt(1, id);
+			preparedStatement.setString(2, nom);
+			preparedStatement.setString(3, etat);
+
+			resultInsert = preparedStatement.executeUpdate();
+			
+			String rsInsert2 = "insert into materiel (code, longueur, largeur, codeMateriel) VALUES (?, ?, ?, ?);";
+			preparedStatement2 = connexion.prepareStatement(rsInsert2);
+			
+			preparedStatement2.setInt(1, id);
+			preparedStatement2.setInt(2, longueur);
+			preparedStatement2.setInt(3, largeur);
+			preparedStatement2.setInt(4, codeMateriel);
+			
+			preparedStatement2.executeUpdate();
+			
+			resultInsert2 = preparedStatement2.executeUpdate();
+			
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultInsert + resultInsert2;
+	}
+	
+	/* fonction qui compte le nombre d'objets
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return un entier qui contient le nombre d'objets
+	*/
+	public static int getNbObjets() {
+		int nb = 0;
+		try {
+			connexionBdd();
+			String rsObjets = "select count(id) as nb from objet";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			resultObjets = preparedStatement.executeQuery();
+
+			if (resultObjets.next()) {
+				int getNb = resultObjets.getInt("nb");
+				nb = getNb;
+			}
+			resultObjets.close();
+			deconnexionBdd();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return nb;
+	}
+	
+	/* fonction qui compte le nombre d'objets empruntés
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return un entier qui contient le nombre d'objets empruntés
+	*/
+	public static int getNbObjetsEmpruntes() {
+		int nb = 0;
+		try {
+			connexionBdd();
+			String rsObjets = "select count(id) as nb from objet where etat = 'emprunte'";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			resultObjets = preparedStatement.executeQuery();
+
+			if (resultObjets.next()) {
+				int getNb = resultObjets.getInt("nb");
+				nb = getNb;
+			}
+			resultObjets.close();
+			deconnexionBdd();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return nb;
+	}
+	
+	public static ArrayList<String> getLibelle() {
+		ArrayList<String> lesNoms = new ArrayList<String>();
+		try {
+			connexionBdd();
+			String rsLibelle = "select libelle from type_materiel;";
+			
+			preparedStatement = connexion.prepareStatement(rsLibelle);
+			resultLibelle = preparedStatement.executeQuery();
+			
+			while (resultLibelle.next()) {
+				lesNoms.add(resultLibelle.getString("libelle"));
+			}
+			resultLibelle.close();
+			deconnexionBdd();	
+		}  catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesNoms;
+	}
+	
+	public static int getNbLibelle() {
+		int nbLibelle = 0;
+		try {
+			connexionBdd();
+			String rsNbObjets = "select count(libelle) as nbLibelle from type_materiel;";
+			preparedStatement = connexion.prepareStatement(rsNbObjets);
+			resultNbLibelle = preparedStatement.executeQuery();
+
+			if (resultNbLibelle.next()) {
+				int getNb = resultNbLibelle.getInt("nbLibelle");
+				nbLibelle = getNb;
+			}
+			
+			resultNbLibelle.close();
+			deconnexionBdd();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return nbLibelle;
+	}
+	
+	public static ArrayList<MaterielTrie> getNbEmpruntsParVisiteur() {
+		ArrayList<MaterielTrie> lesEmprunts = new ArrayList<MaterielTrie>();
+		try {
+			connexionBdd();
+			String rsNbObjets = "SELECT COUNT(idobjet) as nbEmprunts, idEmprunt, idobjet, nom\n" + 
+					"	FROM emprunt E, objet O, materiel M\n" + 
+					"	WHERE E.idObjet = O.id\n" + 
+					"	AND O.id = M.code\n" + 
+					"	GROUP BY idobjet\n" + 
+					"	ORDER BY nbEmprunts DESC;";
+			preparedStatement = connexion.prepareStatement(rsNbObjets);
+			resultNbLibelle = preparedStatement.executeQuery();
+
+			while (resultNbLibelle.next()) {
+				int compteur = resultNbLibelle.getInt(1);
+				//String compteur = Integer.toString(resultNbLibelle.getInt(1)); 
+				//String idEmprunt = Integer.toString(resultNbLibelle.getInt(2)); 
+				//String idObjet = Integer.toString(resultNbLibelle.getInt(3)); 
+				int idEmprunt = resultNbLibelle.getInt(2);
+				int idObjet = resultNbLibelle.getInt(3);
+				String nom = resultNbLibelle.getString(4);
+				MaterielTrie materielTrie = new MaterielTrie(compteur, idEmprunt, idObjet, nom);
+				lesEmprunts.add(materielTrie);
+			}
+
+			resultNbLibelle.close();
+			deconnexionBdd();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesEmprunts;
+	}	
+	
 }

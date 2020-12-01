@@ -12,7 +12,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
     private JMenuBar barre;
     private JMenu menu;
-    private JMenuItem itemAjouter, itemConsulter, itemRechercher;
+    private JMenuItem itemCatalogue, itemAjouter, itemConsulter, itemRechercher;
     private JLabel lblVisiteur;
     private JLabel lblLogin;
 
@@ -20,18 +20,21 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
         barre = new JMenuBar();
         menu = new JMenu("Emprunts");
         
+        itemCatalogue = new JMenuItem("Catalogue des produits");
         itemAjouter = new JMenuItem("Ajout un produit");
         itemConsulter = new JMenuItem("Supprimer un produit");
         itemRechercher = new JMenuItem("Rechercher un produit");
         
-        lblVisiteur = new JLabel("Connecté en tant que " + Database.getRole(login) + " : ");
+        lblVisiteur = new JLabel("ConnectÃ© en tant que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
         lblLogin.setForeground(Color.GREEN.darker());
         
+        itemCatalogue.addActionListener(new VueCatalogue(frame));
         itemAjouter.addActionListener(new VueAjouterObjet(frame));
         itemConsulter.addActionListener(new VueGestion(frame));
         itemRechercher.addActionListener(new VueRechercherObjet(frame));
         
+        menu.add(itemCatalogue);
         menu.add(itemAjouter);
         menu.add(itemConsulter);
         menu.add(itemRechercher);

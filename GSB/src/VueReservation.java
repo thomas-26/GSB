@@ -2,13 +2,18 @@ import javax.swing.*;
 
 import org.jdatepicker.JDateComponentFactory;
 import org.jdatepicker.JDatePicker;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.Properties;
 
 public class VueReservation extends JPanel implements ActionListener {
 	/**
@@ -45,39 +50,23 @@ public class VueReservation extends JPanel implements ActionListener {
 		confirm.addActionListener(this);	
         
 		/* bouton d'emprunt */
-		emprunterButton = new JButton("Emprunter");
+		emprunterButton = new JButton("Valider");
 		emprunterButton.setBounds(160, 230, 150, 25);
 		emprunterButton.setBackground(new Color(59, 89, 182));
 		emprunterButton.setForeground(Color.WHITE);
 		emprunterButton.setFocusPainted(false);
 		emprunterButton.setFont(new Font("Arial", Font.BOLD, 12));
 		emprunterButton.addActionListener(this);	
-		
-		JPanel jPanel = new JPanel();
-		jPanel.setBounds(50,50,500,500);
-		
-		JDatePicker picker = new JDateComponentFactory().createJDatePicker();
-	    picker.setTextEditable(true);
-	    picker.setShowYearButtons(true);
-	    jPanel.add((JComponent) picker);
-	    
-	    picker.getModel().setYear(2010);
-	    picker.getModel().setMonth(1);
-	    //picker.getModel().setMonth(1);
-	    picker.getModel().setDay(15);
-	    picker.getModel().setSelected(true);
 
 		/* ajoute les éléments à notre panel */
 		this.add(welcome);
 		this.add(idObjet);
 		this.add(nomObjet);
-		
+				
 		this.add(confirm);
 		
 		this.add(emprunterButton);
 		
-		this.add(jPanel);
-
 		frame.setVisible(true);
 			
 	}
@@ -100,10 +89,13 @@ public class VueReservation extends JPanel implements ActionListener {
         this.frame.revalidate();
         String stringid = idObjet.getText().substring(27,28);
         int id = Integer.parseInt(stringid);
-        
         /* condition pour vérifier que la checkbox est bien cochée et que le bouton réserver est coché */
     	if(confirm.isSelected() && e.getSource() == emprunterButton) {
-    		Database.reserverObjet(id);
+    		/* on passe les variables en paramètre */
+        	VueCalendrier calendrier = new VueCalendrier(frame,id);
+        	//VueCalendrier reservation = new VueCalendrier(frame);
+        	frame.setContentPane(calendrier);
+        	frame.revalidate();
     	} else if (e.getSource() == emprunterButton && !confirm.isSelected()) {
     		nonSelect();
     	}

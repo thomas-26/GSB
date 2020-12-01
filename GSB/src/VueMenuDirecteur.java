@@ -12,22 +12,22 @@ public class VueMenuDirecteur extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
     private JMenuBar barre;
     private JMenu menu;
-    private JMenuItem itemConsulter;
-    private JMenuItem itemEmprunter;
+    private JMenuItem itemStatistique;
     private JLabel lblDirecteur;
     private JLabel lblLogin;
 
     public VueMenuDirecteur(JFrame frame, String login) {
         barre = new JMenuBar();
-        menu = new JMenu("Emprunts");
-        itemConsulter = new JMenuItem("Consulter");
-        itemEmprunter = new JMenuItem("Emprunter");
+        menu = new JMenu("Statistique");
+        itemStatistique = new JMenuItem("Consulter");
         lblDirecteur = new JLabel("Connecté en temps que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
         lblLogin.setForeground(Color.GREEN.darker());
-
-        menu.add(itemConsulter);
-        menu.add(itemEmprunter);
+                
+        itemStatistique.addActionListener(new VueStatistique(frame));
+        
+        menu.add(itemStatistique);
+        
         barre.add(menu);
         barre.add(lblDirecteur);
         barre.add(lblLogin);
@@ -37,7 +37,6 @@ public class VueMenuDirecteur extends JPanel implements ActionListener {
         frame.getContentPane().add(this);
 
         frame.setJMenuBar(barre);
-
     }
 
     @Override
