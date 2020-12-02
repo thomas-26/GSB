@@ -20,7 +20,7 @@ public class VueMenuDirecteur extends JPanel implements ActionListener {
         barre = new JMenuBar();
         menu = new JMenu("Statistique");
         itemStatistique = new JMenuItem("Consulter");
-        lblDirecteur = new JLabel("Connecté en temps que " + Database.getRole(login) + " : ");
+        lblDirecteur = new JLabel("Connecté en tant que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
         lblLogin.setForeground(Color.GREEN.darker());
                 

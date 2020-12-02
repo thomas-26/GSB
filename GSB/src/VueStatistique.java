@@ -29,7 +29,7 @@ public class VueStatistique extends JPanel implements ActionListener {
 		welcome.setBounds(150, 0, 380, 100);
 		
 		/* JComboBox */
-		String statistiques[]={"Nombre d'objets","Nombre objets empruntés","Nombre matériels empruntés triés"};        
+		String statistiques[]={"Nombre d'objets","Nombre objets empruntés","Nombre matériels empruntés triés","Nombre d'emprunt par visiteur"};        
 		cb = new JComboBox(statistiques);    
 		cb.setBounds(150, 100,200,20);    
         
@@ -78,9 +78,16 @@ public class VueStatistique extends JPanel implements ActionListener {
 	        		d.showMessageDialog( this.frame, data + " : " + Database.getNbObjetsEmpruntes());
 	        		break;
 	        	case 2:
-	        		//d.showMessageDialog( this.frame, data + " : " + Database.getNbEmpruntsParVisiteur());
 	        		/* on passe les variables en paramètre */
                 	VueStatMaterielTrie materiel = new VueStatMaterielTrie(frame);
+                	this.frame.setContentPane(materiel);
+	        	    this.frame.revalidate();
+	        		break;
+	        	case 3:
+	        		/* on passe les variables en paramètre */
+                	VueEmpruntVisiteur empruntVisiteur = new VueEmpruntVisiteur(frame);
+                	this.frame.setContentPane(empruntVisiteur);
+	        	    this.frame.revalidate();
 	        		break;
 	        }
 	    }

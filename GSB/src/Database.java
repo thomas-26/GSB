@@ -325,7 +325,7 @@ public class Database {
 		int nb = 0;
 		try {
 			connexionBdd();
-			String rsObjets = "select count(id) as nb from objet where etat = 'emprunte'";
+			String rsObjets = "select count(idEmprunt) as nb from emprunt";
 			preparedStatement = connexion.prepareStatement(rsObjets);
 			resultObjets = preparedStatement.executeQuery();
 
@@ -382,7 +382,12 @@ public class Database {
 		return nbLibelle;
 	}
 	
-	public static ArrayList<MaterielTrie> getNbEmpruntsParVisiteur() {
+	/* fonction qui compte combien de fois a été emprunté un objet
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une liste qui contient le nombre de fois qu'à été emprunté un objet pour tous
+	*/
+	public static ArrayList<MaterielTrie> getNbEmpruntsParObjet() {
 		ArrayList<MaterielTrie> lesEmprunts = new ArrayList<MaterielTrie>();
 		try {
 			connexionBdd();
@@ -397,9 +402,6 @@ public class Database {
 
 			while (resultNbLibelle.next()) {
 				int compteur = resultNbLibelle.getInt(1);
-				//String compteur = Integer.toString(resultNbLibelle.getInt(1)); 
-				//String idEmprunt = Integer.toString(resultNbLibelle.getInt(2)); 
-				//String idObjet = Integer.toString(resultNbLibelle.getInt(3)); 
 				int idEmprunt = resultNbLibelle.getInt(2);
 				int idObjet = resultNbLibelle.getInt(3);
 				String nom = resultNbLibelle.getString(4);
@@ -413,6 +415,36 @@ public class Database {
 			e.printStackTrace();
 		}
 		return lesEmprunts;
-	}	
+	}
+	
+	/* fonction qui compte le nombre d'emprunts par visiteur
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une liste qui contient le nombre d'objets empruntés par un visiteur
+	*/
+	public static ArrayList<EmpruntVisiteur> getEmpruntsParVisiteurs() {
+		ArrayList<EmpruntVisiteur> lesEmprunts = new ArrayList<EmpruntVisiteur>();
+		try {
+			connexionBdd();
+			String rsNbObjets = "select count(idObjet) as nbObjetsEmpruntes, loginvisiteur\n" + 
+					"from emprunt E\n" + 
+					"GROUP BY loginvisiteur;";
+			preparedStatement = connexion.prepareStatement(rsNbObjets);
+			resultNbLibelle = preparedStatement.executeQuery();
+
+			while (resultNbLibelle.next()) {
+				int compteur = resultNbLibelle.getInt(1);
+				String login = resultNbLibelle.getString(2);
+				EmpruntVisiteur empruntVisiteur = new EmpruntVisiteur(compteur,login);
+				lesEmprunts.add(empruntVisiteur);
+			}
+
+			resultNbLibelle.close();
+			deconnexionBdd();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesEmprunts;
+	}
 	
 }

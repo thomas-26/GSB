@@ -9,7 +9,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class VueStatMaterielTrie extends JPanel implements ActionListener {
+public class VueEmpruntVisiteur extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
@@ -19,7 +19,7 @@ public class VueStatMaterielTrie extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1L;
 
-    public VueStatMaterielTrie(JFrame frame) {
+    public VueEmpruntVisiteur(JFrame frame) {
         this.frame = frame;
 
         remplirPanel();
@@ -28,20 +28,16 @@ public class VueStatMaterielTrie extends JPanel implements ActionListener {
 
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getNbEmpruntsParObjet().size()][4];
+        Object[][] donnees = new Object[Database.getEmpruntsParVisiteurs().size()][2];
 
         tableModel = new DefaultTableModel();
         tableModel.addColumn("nbEmprunts");
-        tableModel.addColumn("idEmprunt");
-        tableModel.addColumn("idObjet");
-        tableModel.addColumn("nom");
+        tableModel.addColumn("loginVisiteur");
         
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
-        for (int i = 0; i < Database.getNbEmpruntsParObjet().size(); i++) {
-            donnees[i][0] = Database.getNbEmpruntsParObjet().get(i).getNbEmprunt();
-            donnees[i][1] = Database.getNbEmpruntsParObjet().get(i).getIdEmprunt();
-            donnees[i][2] = Database.getNbEmpruntsParObjet().get(i).getIdObjet();
-            donnees[i][3] = Database.getNbEmpruntsParObjet().get(i).getNom();
+        for (int i = 0; i < Database.getEmpruntsParVisiteurs().size(); i++) {
+            donnees[i][0] = Database.getEmpruntsParVisiteurs().get(i).getNbEmprunt();
+            donnees[i][1] = Database.getEmpruntsParVisiteurs().get(i).getLoginVisiteur();
             tableModel.addRow(donnees[i]);
         }
         
