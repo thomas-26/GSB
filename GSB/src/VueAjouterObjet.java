@@ -12,7 +12,7 @@ public class VueAjouterObjet extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JTextField idText, nomText, etatText, longueurText, largeurText;
 	private JButton ajouterButton;
-	private JLabel idLabel, nomLabel, welcome, etatLabel, largeurLabel, longueurLabel;
+	private JLabel idLabel, nomLabel, welcome, largeurLabel, longueurLabel;
 	private JFrame frame;
 
 	public VueAjouterObjet(JFrame frame) {
@@ -36,9 +36,6 @@ public class VueAjouterObjet extends JPanel implements ActionListener {
 		
 		nomText = new JTextField(20);
 		nomText.setBounds(200, 180, 160, 25);
-		
-		etatLabel = new JLabel("Etat");
-		etatLabel.setBounds(115, 210, 100, 25);
 		
 		etatText = new JTextField(20);
 		etatText.setBounds(200, 210, 160, 25);
@@ -75,9 +72,6 @@ public class VueAjouterObjet extends JPanel implements ActionListener {
 		
 		this.add(nomLabel);
 		this.add(nomText);
-		
-		this.add(etatLabel);
-		this.add(etatText);
 		
 		this.add(longueurLabel);
 		this.add(longueurText);
@@ -127,10 +121,9 @@ public class VueAjouterObjet extends JPanel implements ActionListener {
 		 * appelle notre fonction de connexion à la base de données et affiche notre
 		 * menu si la connexion a bien été effectuée
 		 */
-        if (e.getSource() == ajouterButton && !idText.getText().isEmpty() && !nomText.getText().isEmpty() && !etatText.getText().isEmpty() && !longueurText.getText().isEmpty() && !largeurText.getText().isEmpty()) {
+        if (e.getSource() == ajouterButton && !idText.getText().isEmpty() && !nomText.getText().isEmpty() && !longueurText.getText().isEmpty() && !largeurText.getText().isEmpty()) {
 			/* à compléter pour check si les valeurs sont conformes */
         	String nom = nomText.getText();
-        	String etat = etatText.getText();
         	int id = 0;
         	int longueur = 0;
         	int largeur = 0;
@@ -148,19 +141,18 @@ public class VueAjouterObjet extends JPanel implements ActionListener {
             /* vide les champs de texte une fois l'ajout effectué */
             idText.setText("");
             nomText.setText("");
-            etatText.setText("");
             longueurText.setText("");
             largeurText.setText("");
             largeurText.setText("");            
             
             /* il faut que l'id saisit ne soit pas déjà dans la base de données sql pour pouvoir procéder */
             if (Database.rechercherObjet(id) == false) {
-            	Database.ajouterObjet(id, nom, etat, longueur, largeur, codemateriel);
-            	System.out.println(Database.ajouterObjet(id, nom, etat, longueur, largeur, codemateriel));
+            	Database.ajouterObjet(id, nom, longueur, largeur, codemateriel);
+            	System.out.println(Database.ajouterObjet(id, nom, longueur, largeur, codemateriel));
 	            /*
 	             * appelle la boite de dialogue en fonction du résultat renvoyé par la fonction
 	             */
-	            if (Database.ajouterObjet(id, nom, etat, longueur, largeur, codemateriel) == 1) {
+	            if (Database.ajouterObjet(id, nom, longueur, largeur, codemateriel) == 1) {
 	            	added();
 	            }
             } else {

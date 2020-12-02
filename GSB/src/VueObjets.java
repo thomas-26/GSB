@@ -31,14 +31,13 @@ public class VueObjets extends JPanel implements ActionListener {
 
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getLesMateriels().size()][5];
+        Object[][] donnees = new Object[Database.getLesMateriels().size()][4];
 
         tableModel = new DefaultTableModel();
         tableModel.addColumn("id");
         tableModel.addColumn("nom");
         tableModel.addColumn("longueur");
         tableModel.addColumn("largeur");
-        tableModel.addColumn("etat");
         
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
         for (int i = 0; i < Database.getLesMateriels().size(); i++) {
@@ -46,7 +45,6 @@ public class VueObjets extends JPanel implements ActionListener {
             donnees[i][1] = Database.getLesMateriels().get(i).getNom();
             donnees[i][2] = Database.getLesMateriels().get(i).getLongueur();
             donnees[i][3] = Database.getLesMateriels().get(i).getLargeur();
-            donnees[i][4] = Database.getLesMateriels().get(i).getEtat();
             tableModel.addRow(donnees[i]);
         }
         
@@ -96,22 +94,16 @@ public class VueObjets extends JPanel implements ActionListener {
                 
                 /* on stock les données dans des variables */
                 int id = (int) table.getModel().getValueAt(row, 0);
-                String etat = table.getModel().getValueAt(row, 4).toString();
                 String nom = table.getModel().getValueAt(row, 1).toString();
                                 
                 /* condition qui agit en fonction de l'état actuel du produit */
-                if (etat.equals("disponible")) {
-                	disponible();
-                
-                	/* on passe les variables en paramètre */
-                	VueReservation reservation = new VueReservation(frame, login, id, nom);
-                	//VueCalendrier reservation = new VueCalendrier(frame);
-                	frame.setContentPane(reservation);
+                disponible();
+                /* on passe les variables en paramètre */
+                VueReservation reservation = new VueReservation(frame, login, id, nom);
+                //VueCalendrier reservation = new VueCalendrier(frame);
+                frame.setContentPane(reservation);
 
-                	frame.revalidate();
-                } else {
-                	nonDisponible();
-                }
+                frame.revalidate();
             }
         });
     }

@@ -28,7 +28,7 @@ public class VueCatalogue extends JPanel implements ActionListener {
 
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getLesMaterielsEmpruntes().size()][6];
+        Object[][] donnees = new Object[Database.getLesMaterielsEmpruntes().size()][5];
 
         tableModel = new DefaultTableModel();
         tableModel.addColumn("id");
@@ -45,7 +45,6 @@ public class VueCatalogue extends JPanel implements ActionListener {
             donnees[i][2] = Database.getLesMaterielsEmpruntes().get(i).getLongueur();
             donnees[i][3] = Database.getLesMaterielsEmpruntes().get(i).getLargeur();
             donnees[i][4] = Database.getLesMaterielsEmpruntes().get(i).getCodeMateriel();
-            donnees[i][5] = Database.getLesMaterielsEmpruntes().get(i).getEtat();
             tableModel.addRow(donnees[i]);
         }
                 

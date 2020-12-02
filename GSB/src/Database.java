@@ -1,5 +1,7 @@
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Database {
 	private static Connection connexion;
@@ -16,7 +18,7 @@ public class Database {
 	public static void connexionBdd() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","sio","slam");
+			connexion = DriverManager.getConnection("jdbc:mysql://localhost/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
 			connexion.createStatement();
 		}
 		
@@ -112,7 +114,7 @@ public class Database {
 		ArrayList<Materiel> lesMateriels = new ArrayList<Materiel>();
 		try {
 			connexionBdd();
-			String rsObjets = "select id, nom, longueur, largeur, codemateriel, etat from objet o, materiel m where m.code = id;";
+			String rsObjets = "select id, nom, longueur, largeur, codemateriel from objet o, materiel m where m.code = id;";
 			preparedStatement = connexion.prepareStatement(rsObjets);
 			resultObjets = preparedStatement.executeQuery();
 			
@@ -122,9 +124,8 @@ public class Database {
 				float longueur = resultObjets.getFloat("longueur");
 				int codeMateriel = resultObjets.getInt("codemateriel");
 				float largeur = resultObjets.getFloat("largeur");
-				String etat = resultObjets.getString("etat");
 				
-				lesMateriels.add(new Materiel(id, nom, longueur, largeur, etat, codeMateriel));
+				lesMateriels.add(new Materiel(id, nom, longueur, largeur, codeMateriel));
 			}
 			resultObjets.close();
 			deconnexionBdd();
@@ -133,6 +134,9 @@ public class Database {
 		}
 		return lesMateriels;
 	}
+	
+	
+	/* Fonction à faire en vérifiant la date actuelle*/
 	
 	/* fonction de récupération des matériels empruntés
 	*
@@ -143,7 +147,7 @@ public class Database {
 		ArrayList<Materiel> lesMateriels = new ArrayList<Materiel>();
 		try {
 			connexionBdd();
-			String rsObjets = "select id, nom, longueur, largeur, codemateriel, etat from objet o, materiel m where m.code = id and etat = 'emprunte';";
+			String rsObjets = "select id, nom, longueur, largeur, codemateriel from objet o, materiel m,emprunt e where m.code = id and idObjet = id;";
 			preparedStatement = connexion.prepareStatement(rsObjets);
 			resultObjets = preparedStatement.executeQuery();
 			
@@ -153,9 +157,8 @@ public class Database {
 				float longueur = resultObjets.getFloat("longueur");
 				int codeMateriel = resultObjets.getInt("codemateriel");
 				float largeur = resultObjets.getFloat("largeur");
-				String etat = resultObjets.getString("etat");
 				
-				lesMateriels.add(new Materiel(id, nom, longueur, largeur, etat, codeMateriel));
+				lesMateriels.add(new Materiel(id, nom, longueur, largeur, codeMateriel));
 			}
 			resultObjets.close();
 			deconnexionBdd();
@@ -169,7 +172,7 @@ public class Database {
 	*
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @return une liste contenant l'état des matériels
-	*/
+	*//*
 	public static ArrayList<String> getLesEtats() {
 		ArrayList<String> lesEtats = new ArrayList<String>();
 		try {
@@ -189,7 +192,7 @@ public class Database {
 			e.printStackTrace();
 		}
 		return lesEtats;
-	}
+	}*/
 	
 	/* fonction de suppression du rôle de l'utilisateur connecté
 	*
@@ -260,15 +263,14 @@ public class Database {
 	}
 	
 	/* fonction qui ajoute un visiteur avec les données passées en paramètre */
-	public static int ajouterObjet(int id, String nom, String etat, int longueur, int largeur, int codeMateriel) {
+	public static int ajouterObjet(int id, String nom, int longueur, int largeur, int codeMateriel) {
 		try {
 			connexionBdd();
-			String rsInsert = "insert into objet (id, nom, etat) VALUES (?, ?, ?);";
+			String rsInsert = "insert into objet (id, nom) VALUES (?, ?, ?);";
 			preparedStatement = connexion.prepareStatement(rsInsert);
 
 			preparedStatement.setInt(1, id);
 			preparedStatement.setString(2, nom);
-			preparedStatement.setString(3, etat);
 
 			resultInsert = preparedStatement.executeUpdate();
 			
@@ -472,6 +474,48 @@ public class Database {
 			e.printStackTrace();
 		}
 		return resultInsert;
+	}
+	
+	/* fonction qui ajoute un objet dans la table emprunté
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @returne un entier qui contient le résultat des requetes
+	*/
+	public static boolean emprunterObjet(String dateDebut, int idObjet) {
+		boolean rep = true;
+		try {
+			connexionBdd();
+			String rsSelect = "select datedebut, datefin from emprunt where idObjet = ?;";
+			preparedStatement = connexion.prepareStatement(rsSelect);
+			preparedStatement.setInt(1, idObjet);
+			resultNbLibelle = preparedStatement.executeQuery();
+
+			
+			while (resultNbLibelle.next()) {
+				rep = false;
+				String uneDateDebut = resultNbLibelle.getString(1);
+				String uneDateFin = resultNbLibelle.getString(2);
+				System.out.println(uneDateDebut + " " + uneDateFin);
+				String d = "2020-12-02";
+				SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd"); 
+				try {
+				    Date date1 = formatter2.parse(d); 
+				    Date date2 = formatter2.parse(uneDateDebut); 
+				    Date date3 = formatter2.parse(uneDateFin); 
+				    if(date1.after(date2) && date1.before(date3)) {
+						System.out.println("incroyable");
+					}
+				 } catch (java.text.ParseException e) {
+			            // TODO Auto-generated catch block
+			            e.printStackTrace();
+				 }
+			}
+			
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return rep;
 	}
 	
 	

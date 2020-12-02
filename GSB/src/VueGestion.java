@@ -44,7 +44,6 @@ public class VueGestion extends JPanel implements ActionListener {
             donnees[i][1] = Database.getLesMateriels().get(i).getNom();
             donnees[i][2] = Database.getLesMateriels().get(i).getLongueur();
             donnees[i][3] = Database.getLesMateriels().get(i).getLargeur();
-            donnees[i][4] = Database.getLesMateriels().get(i).getEtat();
             tableModel.addRow(donnees[i]);
         }
         
