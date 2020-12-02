@@ -28,8 +28,10 @@ public class VueCalendrier extends JPanel implements ActionListener {
 	private JButton emprunterButton;
 	private int id;
 	private JComboBox<Date> cb, cb2;
+	private String login;
 	
-	public VueCalendrier(JFrame frame, int id) {
+	public VueCalendrier(JFrame frame, String login, int id) {
+		this.login = login;
 		this.frame = frame;
 		this.setLayout(null);
 		this.id = id;
@@ -146,17 +148,25 @@ public class VueCalendrier extends JPanel implements ActionListener {
     	String data = "" + cb.getItemAt(cb.getSelectedIndex()); 
     	String data2 = "" + cb2.getItemAt(cb2.getSelectedIndex()); 
 
-    	String[] splited = data2.split(" ");
+    	String[] splited = data.split(" ");
     	String test = splited[3];
     	String heureDebut = test.substring(0,5);
-    	System.out.println(heureDebut);
+    	
+    	String[] splited2 = data2.split(" ");
+    	String test2 = splited2[3];
+    	String heureFin = test2.substring(0,5);
    
         
         System.out.println(dateFormatedDate);
         System.out.println(dateFormatedDate2); 
-        System.out.println(data);
-        System.out.println(data2);
+    	System.out.println(heureDebut);
+    	System.out.println(heureFin);
+
         //Database.reserverObjet(id);
+    	
+    	
+    	
+    	//Database.emprunterObjet(dateFormatedDate,dateFormatedDate2,heureDebut,heureFin,login,id);
 	}
 
 }

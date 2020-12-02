@@ -15,13 +15,15 @@ public class VueObjets extends JPanel implements ActionListener {
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton reserverButton;
+    private String login;
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    public VueObjets(JFrame frame) {
+    public VueObjets(JFrame frame, String login) {
         this.frame = frame;
+    	this.login = login;
 
         remplirPanel();
         frame.setVisible(true);
@@ -102,7 +104,7 @@ public class VueObjets extends JPanel implements ActionListener {
                 	disponible();
                 
                 	/* on passe les variables en paramètre */
-                	VueReservation reservation = new VueReservation(frame, id, nom);
+                	VueReservation reservation = new VueReservation(frame, login, id, nom);
                 	//VueCalendrier reservation = new VueCalendrier(frame);
                 	frame.setContentPane(reservation);
 

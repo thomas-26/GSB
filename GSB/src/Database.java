@@ -447,4 +447,33 @@ public class Database {
 		return lesEmprunts;
 	}
 	
+	/* fonction qui ajoute un objet dans la table emprunté
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @returne un entier qui contient le résultat des requetes
+	*/
+	public static int emprunterObjet(String dateDebut, String dateFin, String heureDebut, String heureFin, String login, int id) {
+		try {
+			connexionBdd();
+			String rsInsert = "insert into emprunt(datedebut,datefin,heuredebut,heurefin,loginvisiteur,idobjet) VALUES (?, ?, ?, ?, ?, ?);";
+			preparedStatement = connexion.prepareStatement(rsInsert);
+
+			preparedStatement.setString(1, dateDebut);
+			preparedStatement.setString(2, dateFin);
+			preparedStatement.setString(3, heureDebut);
+			preparedStatement.setString(4, heureFin);
+			preparedStatement.setString(5, login);
+			preparedStatement.setInt(6, id);
+
+			resultInsert = preparedStatement.executeUpdate();
+			
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultInsert;
+	}
+	
+	
+	
 }

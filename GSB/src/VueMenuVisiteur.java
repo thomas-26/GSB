@@ -25,7 +25,7 @@ public class VueMenuVisiteur extends JPanel implements ActionListener {
         lblLogin = new JLabel(login);
         lblLogin.setForeground(Color.GREEN.darker());
         
-        itemConsulter.addActionListener(new VueObjets(frame));
+        itemConsulter.addActionListener(new VueObjets(frame,login));
 
         menu.add(itemConsulter);
         

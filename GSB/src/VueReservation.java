@@ -24,8 +24,10 @@ public class VueReservation extends JPanel implements ActionListener {
 	private JLabel welcome, idObjet, nomObjet;
 	private JFrame frame;
 	private JCheckBox confirm;
+	private String login;
 	
-	public VueReservation(JFrame frame, int id, String nom) {
+	public VueReservation(JFrame frame, String login, int id, String nom) {
+		this.login = login;
 		this.frame = frame;
 		this.setLayout(null);
 		
@@ -92,7 +94,7 @@ public class VueReservation extends JPanel implements ActionListener {
         /* condition pour vérifier que la checkbox est bien cochée et que le bouton réserver est coché */
     	if(confirm.isSelected() && e.getSource() == emprunterButton) {
     		/* on passe les variables en paramètre */
-        	VueCalendrier calendrier = new VueCalendrier(frame,id);
+        	VueCalendrier calendrier = new VueCalendrier(frame,login,id);
         	//VueCalendrier reservation = new VueCalendrier(frame);
         	frame.setContentPane(calendrier);
         	frame.revalidate();
