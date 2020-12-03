@@ -81,11 +81,11 @@ public class VueCalendrier extends JPanel implements ActionListener {
 		lblHeureDebut = new JLabel("Heure début");	
 		
 		Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
         calendar.set(Calendar.MINUTE, 0);
 
         Calendar end = Calendar.getInstance();
-        end.set(Calendar.HOUR_OF_DAY, 23);
+        end.set(Calendar.HOUR_OF_DAY, 19);
         end.set(Calendar.MINUTE, 59);
         DefaultComboBoxModel<Date> model3 = new DefaultComboBoxModel<>();
         do {
@@ -99,11 +99,11 @@ public class VueCalendrier extends JPanel implements ActionListener {
         lblHeureFin = new JLabel("Heure fin");	
 		
 		Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(Calendar.HOUR_OF_DAY, 0);
+        calendar2.set(Calendar.HOUR_OF_DAY, 7);
         calendar2.set(Calendar.MINUTE, 0);
 
         Calendar end2 = Calendar.getInstance();
-        end2.set(Calendar.HOUR_OF_DAY, 23);
+        end2.set(Calendar.HOUR_OF_DAY, 19);
         end2.set(Calendar.MINUTE, 59);
         DefaultComboBoxModel<Date> model4 = new DefaultComboBoxModel<>();
         do {
@@ -149,18 +149,34 @@ public class VueCalendrier extends JPanel implements ActionListener {
     	String data2 = "" + cb2.getItemAt(cb2.getSelectedIndex()); 
 
     	String[] splited = data.split(" ");
-    	String test = splited[3];
-    	String heureDebut = test.substring(0,5);
+    	String splitedbis = splited[3];
+    	String heureDebut = splitedbis.substring(0,5);  	
     	
     	String[] splited2 = data2.split(" ");
-    	String test2 = splited2[3];
-    	String heureFin = test2.substring(0,5);
-   
-    	System.out.println("dateFormated : " + dateFormatedDateDebut + " " + dateFormatedDateFin + " " + heureDebut + " " + heureFin);
+    	String splited2bis = splited2[3];
+    	String heureFin = splited2bis.substring(0,5);
     	
-    	if(Database.emprunterObjetDate(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,id)) {
+    	//System.out.println("dateFormated : " + dateFormatedDateDebut + " " + dateFormatedDateFin + " " + heureDebut + " " + heureFin);
+    	
+    	if(Database.emprunterObjetDate(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,id) == 1) {
     		Database.emprunterObjet(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,login,id);
+    		JOptionPane.showMessageDialog(this, "L'objet a bien été réservé", "Félicitation", JOptionPane.INFORMATION_MESSAGE);
+    		/* on passe les variables en paramètre */
+            VueMenuVisiteur menu = new VueMenuVisiteur(frame,login);
+            //VueCalendrier reservation = new VueCalendrier(frame);
+            frame.setContentPane(menu);
+            frame.revalidate();	
     	}
+    	else if(Database.emprunterObjetDate(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,id) == 0) {
+    		JOptionPane.showMessageDialog(this, "L'objet est déjà emprunté à cette date", "Erreur", JOptionPane.WARNING_MESSAGE);
+    	}
+    	else if(Database.emprunterObjetDate(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,id) == 2) {
+    		JOptionPane.showMessageDialog(this, "Réservez avant dans la journée", "Erreur", JOptionPane.WARNING_MESSAGE);
+    	}
+    	else if(Database.emprunterObjetDate(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,id) == 3) {
+    		JOptionPane.showMessageDialog(this, "Réservez plus tard dans la journée", "Erreur", JOptionPane.WARNING_MESSAGE);
+    	}
+    	
 	}
 
 }

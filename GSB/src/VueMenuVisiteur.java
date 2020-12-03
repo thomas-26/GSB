@@ -28,7 +28,7 @@ public class VueMenuVisiteur extends JPanel implements ActionListener {
 
         lblVisiteur = new JLabel("Connecté en tant que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
-        lblLogin.setForeground(Color.GREEN.darker());
+        lblLogin.setForeground(new Color(59, 89, 182));
 
         /* bouton de d?connexion */
         deconnexion = new JButton("Déconnexion");
@@ -99,11 +99,14 @@ public class VueMenuVisiteur extends JPanel implements ActionListener {
             });
             sousmenu2.add(Jmi2);
         }
-
+        
+        JMenuItem Jmi3 = new JMenuItem("Consulter emprunts");
+        
         menu.addSeparator();
 
         menu.add(sousmenu);
         menu.add(sousmenu2);
+        menu.add(Jmi3);
 
         barre.add(menu);
         barre.add(lblVisiteur);

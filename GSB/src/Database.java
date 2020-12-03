@@ -650,8 +650,8 @@ public class Database {
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @returne un entier qui contient le résultat des requetes
 	*/
-	public static boolean emprunterObjetDate(String dateDebut, String dateFin, String heureDebut, String heureFin, int idObjet) {
-		boolean rep = true;
+	public static int emprunterObjetDate(String dateDebut, String dateFin, String heureDebut, String heureFin, int idObjet) {
+		int rep = 1;
 		try {
 			connexionBdd();
 			String rsSelect = "select datedebut, datefin, heuredebut, heurefin from emprunt where idObjet = ?;";
@@ -663,7 +663,23 @@ public class Database {
 				String uneDateFin = resultEmprunt.getString(2);
 				String uneHeureDebut = resultEmprunt.getString(3);
 				String uneHeureFin = resultEmprunt.getString(4);
-				System.out.println(uneDateDebut + " " + uneDateFin + " " + uneHeureDebut + " " + uneHeureFin);
+				
+				String[] splitedbis = uneHeureDebut.split(":");
+				String uneHeureDebutString = splitedbis[0] + splitedbis[1];
+				String[] splited2bis = uneHeureFin.split(":");
+				String uneHeureFinString = splited2bis[0] + splited2bis[1];
+				
+				String[] splited3bis = heureDebut.split(":");
+				String heureDebutString = splited3bis[0] + splited3bis[1];
+				String[] splited4bis = heureFin.split(":");
+				String heureFinString = splited4bis[0] + splited4bis[1];
+				
+				int uneHeureDebutInt=Integer.parseInt(uneHeureDebutString); 
+		    	int uneHeureFinInt=Integer.parseInt(uneHeureFinString); 
+		    	int heureDebutInt=Integer.parseInt(heureDebutString); 
+		    	int heureFinInt=Integer.parseInt(heureFinString); 
+				
+				System.out.println(heureDebutInt + " " + heureFinInt + " " + uneHeureDebutInt + " " + uneHeureFinInt);
 				SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd"); 
 				try {
 				    Date datePasseDebut = formatter2.parse(dateDebut); 
@@ -675,14 +691,17 @@ public class Database {
 				    		|| (datePasseDebut.before(laDateDebut)) && (datePasseFin.after(laDateDebut)) 
 				    		|| (datePasseDebut.equals(laDateDebut))) 
 				    {
-				    	rep = false;
+				    	rep = 0;
 					}
 				    else if(datePasseFin.equals(laDateDebut)) {
-				    	rep = false;
-				    	System.out.println("meme date");
+				    	if(heureFinInt >= uneHeureDebutInt) {
+				    		rep = 2;
+				    	}
 				    }
-				    else {
-				    	System.out.println("incroyable");
+				    else if(datePasseDebut.equals(laDateFin)) {
+				    	if(heureDebutInt <= uneHeureFinInt) {
+				    		rep = 3;
+				    	}
 				    }
 				 } catch (java.text.ParseException e) {
 			            // TODO Auto-generated catch block
