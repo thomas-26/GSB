@@ -28,16 +28,16 @@ public class VueEmpruntVisiteur extends JPanel implements ActionListener {
 
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getEmpruntsParVisiteurs().size()][2];
+        Object[][] donnees = new Object[Database.getEmpruntsParVisiteur().size()][2];
 
         tableModel = new DefaultTableModel();
         tableModel.addColumn("nbEmprunts");
         tableModel.addColumn("loginVisiteur");
         
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
-        for (int i = 0; i < Database.getEmpruntsParVisiteurs().size(); i++) {
-            donnees[i][0] = Database.getEmpruntsParVisiteurs().get(i).getNbEmprunt();
-            donnees[i][1] = Database.getEmpruntsParVisiteurs().get(i).getLoginVisiteur();
+        for (int i = 0; i < Database.getEmpruntsParVisiteur().size(); i++) {
+            donnees[i][0] = Database.getEmpruntsParVisiteur().get(i).getNbEmprunt();
+            donnees[i][1] = Database.getEmpruntsParVisiteur().get(i).getLoginVisiteur();
             tableModel.addRow(donnees[i]);
         }
         

@@ -66,4 +66,3 @@ public class VueCatalogue extends JPanel implements ActionListener {
     } 
 
 }
-    

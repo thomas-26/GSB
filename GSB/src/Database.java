@@ -5,9 +5,9 @@ import java.util.Date;
 
 public class Database {
 	private static Connection connexion;
-	private static PreparedStatement preparedStatement, preparedStatement2;
-	private static ResultSet result, resultObjets, resultLibelle, resultNbLibelle;
-	private static int resultInsert, resultInsert2;
+	private static PreparedStatement preparedStatement, preparedStatement2, preparedStatement3;
+	private static ResultSet result, resultObjets, resultLibelle, resultNbLibelle, resultEmprunt;
+	private static int resultInsert, resultInsert2, resultInsert3;
 		
 	/* fonction de connexion à la base de données 
 	 *   
@@ -18,7 +18,7 @@ public class Database {
 	public static void connexionBdd() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connexion = DriverManager.getConnection("jdbc:mysql://localhost/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
+			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","sio","slam");
 			connexion.createStatement();
 		}
 		
@@ -135,6 +135,36 @@ public class Database {
 		return lesMateriels;
 	}
 	
+	/* fonction de récupération des matériels
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une lisete de matériels contenant les matériels
+	*/ 
+	public static ArrayList<Materiel> getLesMateriels(String nomLibelle) {
+		ArrayList<Materiel> lesMateriels = new ArrayList<Materiel>();
+		try {
+			connexionBdd();
+			String rsObjets = "select id, nom, longueur, largeur from objet o, materiel m, type_materiel t where m.code = id and t.code = m.codemateriel and libelle = ?;";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			preparedStatement.setString(1, nomLibelle);
+			resultObjets = preparedStatement.executeQuery();
+			
+			while (resultObjets.next()) {
+				int id = resultObjets.getInt("id");
+				String nom = resultObjets.getString("nom");
+				float longueur = resultObjets.getFloat("longueur");
+				float largeur = resultObjets.getFloat("largeur");
+				
+				lesMateriels.add(new Materiel(id, nom, longueur, largeur));
+			}
+			resultObjets.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesMateriels;
+	}
+	
 	
 	/* Fonction à faire en vérifiant la date actuelle*/
 	
@@ -167,32 +197,6 @@ public class Database {
 		}
 		return lesMateriels;
 	}
-	
-	/* fonction de récupération de l'état de chaque matériel
-	*
-	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
-	* @return une liste contenant l'état des matériels
-	*//*
-	public static ArrayList<String> getLesEtats() {
-		ArrayList<String> lesEtats = new ArrayList<String>();
-		try {
-			connexionBdd();
-			String rsObjets = "select etat from objet o;";
-			preparedStatement = connexion.prepareStatement(rsObjets);
-			resultObjets = preparedStatement.executeQuery();
-			
-			while (resultObjets.next()) {
-				String etat = resultObjets.getString("etat");
-				
-				lesEtats.add(new String(etat));
-			}
-			resultObjets.close();
-			deconnexionBdd();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return lesEtats;
-	}*/
 	
 	/* fonction de suppression du rôle de l'utilisateur connecté
 	*
@@ -245,7 +249,11 @@ public class Database {
 		return etat;
 	}
 	
-	/* fonction de suppression */
+	/* fonction de suppression
+	* @param id
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return un booléen qui contient le résultat de la mise à jour
+	*/
 	public static boolean reserverObjet(int id) {
 		boolean etat = false;
 		try {
@@ -262,35 +270,41 @@ public class Database {
 		return etat;
 	}
 	
-	/* fonction qui ajoute un visiteur avec les données passées en paramètre */
-	public static int ajouterObjet(int id, String nom, int longueur, int largeur, int codeMateriel) {
+	/* fonction qui ajoute un visiteur avec les données passées en paramètre
+	* @param id, nom, etat, longueur, largeur, codeMateriel, typemateriel
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return un entier qui contient le résultat des requetes
+	*/
+	public static int ajouterObjet(int id, String nom, int longueur, int largeur, int codeMateriel, String typemateriel) {
 		try {
 			connexionBdd();
-			String rsInsert = "insert into objet (id, nom) VALUES (?, ?, ?);";
+			String rsInsert = "insert into objet (id, nom) VALUES (?, ?);";
 			preparedStatement = connexion.prepareStatement(rsInsert);
-
 			preparedStatement.setInt(1, id);
 			preparedStatement.setString(2, nom);
-
 			resultInsert = preparedStatement.executeUpdate();
 			
-			String rsInsert2 = "insert into materiel (code, longueur, largeur, codeMateriel) VALUES (?, ?, ?, ?);";
-			preparedStatement2 = connexion.prepareStatement(rsInsert2);
+			String rsInsert3 = "insert into type_materiel (libelle) VALUES (?);";
+			preparedStatement3 = connexion.prepareStatement(rsInsert3);
+			preparedStatement3.setString(1, typemateriel);
+			preparedStatement3.executeUpdate();
+			resultInsert3 = preparedStatement3.executeUpdate();
 			
+			
+			String rsInsert2 = "insert into materiel (code, longueur, largeur, codemateriel) VALUES (?, ?, ?, ?);";
+			preparedStatement2 = connexion.prepareStatement(rsInsert2);
 			preparedStatement2.setInt(1, id);
 			preparedStatement2.setInt(2, longueur);
 			preparedStatement2.setInt(3, largeur);
 			preparedStatement2.setInt(4, codeMateriel);
-			
 			preparedStatement2.executeUpdate();
-			
 			resultInsert2 = preparedStatement2.executeUpdate();
 			
 			deconnexionBdd();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return resultInsert + resultInsert2;
+		return resultInsert + resultInsert2 + resultInsert3;
 	}
 	
 	/* fonction qui compte le nombre d'objets
@@ -343,6 +357,11 @@ public class Database {
 		return nb;
 	}
 	
+	/* fonction qui récupére les libellés de tous les types de matériel
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return les noms sous forme de ArrayList
+	*/
 	public static ArrayList<String> getLibelle() {
 		ArrayList<String> lesNoms = new ArrayList<String>();
 		try {
@@ -363,11 +382,16 @@ public class Database {
 		return lesNoms;
 	}
 	
+	/* fonction qui compte le nombre de libelle
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return un entier qui représente le nombre de libellés
+	*/
 	public static int getNbLibelle() {
 		int nbLibelle = 0;
 		try {
 			connexionBdd();
-			String rsNbObjets = "select count(libelle) as nbLibelle from type_materiel;";
+			String rsNbObjets = "select count(distinct libelle) as nbLibelle from type_materiel;";
 			preparedStatement = connexion.prepareStatement(rsNbObjets);
 			resultNbLibelle = preparedStatement.executeQuery();
 
@@ -424,7 +448,7 @@ public class Database {
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @return une liste qui contient le nombre d'objets empruntés par un visiteur
 	*/
-	public static ArrayList<EmpruntVisiteur> getEmpruntsParVisiteurs() {
+	public static ArrayList<EmpruntVisiteur> getEmpruntsParVisiteur() {
 		ArrayList<EmpruntVisiteur> lesEmprunts = new ArrayList<EmpruntVisiteur>();
 		try {
 			connexionBdd();
@@ -476,48 +500,49 @@ public class Database {
 		return resultInsert;
 	}
 	
-	/* fonction qui ajoute un objet dans la table emprunté
+	/* fonction qui récupère la date de début et de fin des emprunts pour 
 	*
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @returne un entier qui contient le résultat des requetes
 	*/
-	public static boolean emprunterObjet(String dateDebut, int idObjet) {
+	public static boolean emprunterObjetDate(String dateDebut, int idObjet) {
 		boolean rep = true;
 		try {
 			connexionBdd();
 			String rsSelect = "select datedebut, datefin from emprunt where idObjet = ?;";
 			preparedStatement = connexion.prepareStatement(rsSelect);
 			preparedStatement.setInt(1, idObjet);
-			resultNbLibelle = preparedStatement.executeQuery();
-
-			
-			while (resultNbLibelle.next()) {
+			resultEmprunt = preparedStatement.executeQuery();
+			while (resultEmprunt.next()) {
 				rep = false;
-				String uneDateDebut = resultNbLibelle.getString(1);
-				String uneDateFin = resultNbLibelle.getString(2);
+				String uneDateDebut = resultEmprunt.getString(1);
+				String uneDateFin = resultEmprunt.getString(2);
 				System.out.println(uneDateDebut + " " + uneDateFin);
 				String d = "2020-12-02";
+				String d2 = "2020-12-04";
 				SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd"); 
 				try {
-				    Date date1 = formatter2.parse(d); 
-				    Date date2 = formatter2.parse(uneDateDebut); 
-				    Date date3 = formatter2.parse(uneDateFin); 
-				    if(date1.after(date2) && date1.before(date3)) {
+				    Date datePasseDebut = formatter2.parse(d); 
+				    Date datePasseFin = formatter2.parse(d2); 
+				    Date laDateDebut = formatter2.parse(uneDateDebut); 
+				    Date laDateFin = formatter2.parse(uneDateFin); 
+				    if(datePasseDebut.after(laDateDebut) && datePasseDebut.before(laDateFin) || (datePasseFin.after(laDateDebut) && datePasseFin.before(laDateFin))) {
 						System.out.println("incroyable");
 					}
+				    else {
+				    	System.out.println("oh no");
+				    }
 				 } catch (java.text.ParseException e) {
 			            // TODO Auto-generated catch block
 			            e.printStackTrace();
 				 }
 			}
-			
+			resultEmprunt.close();
 			deconnexionBdd();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return rep;
-	}
-	
-	
+	}	
 	
 }

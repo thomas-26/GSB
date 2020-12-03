@@ -9,7 +9,7 @@ public class MaterielTrie {
 	public MaterielTrie(int unNbEmprunt, int unIdEmprunt, int unIdObjet, String unNom) {
 		this.nbEmprunts = unNbEmprunt;
 		this.idEmprunt = unIdEmprunt;
-		this.idObjet = idObjet;
+		this.idObjet = unIdObjet;
 		this.nom = unNom;
 	}
 	
@@ -22,7 +22,7 @@ public class MaterielTrie {
 	}
 	
 	public int getIdObjet() {
-		return this.nbEmprunts;
+		return this.idObjet;
 	}
 	
 	public String getNom() {

@@ -157,12 +157,11 @@ public class VueCalendrier extends JPanel implements ActionListener {
     	String heureFin = test2.substring(0,5);
    
         
-        /*System.out.println(dateFormatedDate);
+       /* System.out.println(dateFormatedDate);
         System.out.println(dateFormatedDate2); 
     	System.out.println(heureDebut);
     	System.out.println(heureFin);*/
-    	
-    	System.out.println(Database.emprunterObjet(dateFormatedDate,id));
+    	Database.emprunterObjetDate(dateFormatedDate,id);
 
         //Database.reserverObjet(id);
     	

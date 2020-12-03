@@ -2,6 +2,12 @@ public class Materiel extends Objet{
 	private float largeur, longueur;
 	private int codeMateriel;
 	
+	public Materiel(int id, String nom, float largeur, float longueur) {
+		super(id,nom);
+		this.largeur = largeur;
+		this.longueur = longueur;
+	}
+	
 	public Materiel(int id, String nom, float largeur, float longueur, int codeMateriel) {
 		super(id,nom);
 		this.largeur = largeur;

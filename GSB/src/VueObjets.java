@@ -15,23 +15,24 @@ public class VueObjets extends JPanel implements ActionListener {
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton reserverButton;
-    private String login;
+	private String nomLibelle, login;
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    public VueObjets(JFrame frame, String login) {
-        this.frame = frame;
+    public VueObjets(JFrame frame, String nomLibelle, String login) {
     	this.login = login;
-
+        this.frame = frame;
+        this.nomLibelle = nomLibelle;
+  
         remplirPanel();
         frame.setVisible(true);
     }
-
+    
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getLesMateriels().size()][4];
+        Object[][] donnees = new Object[Database.getLesMateriels(nomLibelle).size()][4];
 
         tableModel = new DefaultTableModel();
         tableModel.addColumn("id");
@@ -40,11 +41,11 @@ public class VueObjets extends JPanel implements ActionListener {
         tableModel.addColumn("largeur");
         
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
-        for (int i = 0; i < Database.getLesMateriels().size(); i++) {
-            donnees[i][0] = Database.getLesMateriels().get(i).getId();
-            donnees[i][1] = Database.getLesMateriels().get(i).getNom();
-            donnees[i][2] = Database.getLesMateriels().get(i).getLongueur();
-            donnees[i][3] = Database.getLesMateriels().get(i).getLargeur();
+        for (int i = 0; i < Database.getLesMateriels(nomLibelle).size(); i++) {
+            donnees[i][0] = Database.getLesMateriels(nomLibelle).get(i).getId();
+            donnees[i][1] = Database.getLesMateriels(nomLibelle).get(i).getNom();
+            donnees[i][2] = Database.getLesMateriels(nomLibelle).get(i).getLongueur();
+            donnees[i][3] = Database.getLesMateriels(nomLibelle).get(i).getLargeur();
             tableModel.addRow(donnees[i]);
         }
         
@@ -54,7 +55,7 @@ public class VueObjets extends JPanel implements ActionListener {
         reserverButton.setForeground(Color.WHITE);
         reserverButton.setFocusPainted(false);
         reserverButton.setFont(new Font("Arial", Font.BOLD, 12));
-//        reserverButton.addActionListener(this);        
+        reserverButton.addActionListener(this);
         
         /* création du table + remplissage */
         table = new JTable(tableModel);
@@ -86,25 +87,26 @@ public class VueObjets extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         this.frame.setContentPane(this);
         this.frame.revalidate();
-        /* action listener du bouton pour réserver le matériel sélectionné */
-        reserverButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	 /* on récupére la colonne et la ligne sur laquelle la séléction est faite */
-                int row = table.getSelectedRow();
-                
-                /* on stock les données dans des variables */
-                int id = (int) table.getModel().getValueAt(row, 0);
-                String nom = table.getModel().getValueAt(row, 1).toString();
-                                
-                /* condition qui agit en fonction de l'état actuel du produit */
-                disponible();
+
+        /* test si le bouton a été cliqué */
+        if (e.getSource() == reserverButton) {
+            /* on récupére la colonne et la ligne sur laquelle la séléction est faite */
+            int row = table.getSelectedRow();
+
+            /* on stock les données dans des variables */
+            int id = (int) table.getModel().getValueAt(row, 0);
+            String nom = table.getModel().getValueAt(row, 1).toString();
+
+            /* condition qui agit en fonction de l'état actuel du produit */
+            	disponible();
+
                 /* on passe les variables en paramètre */
                 VueReservation reservation = new VueReservation(frame, login, id, nom);
                 //VueCalendrier reservation = new VueCalendrier(frame);
                 frame.setContentPane(reservation);
 
                 frame.revalidate();
-            }
-        });
+            
+       }
     }
  }

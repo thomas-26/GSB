@@ -15,37 +15,39 @@ public class VueGestion extends JPanel implements ActionListener {
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton supprimerButton;
+    private String nomLibelle;
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    public VueGestion(JFrame frame) {
+    public VueGestion(JFrame frame, String nomLibelle) {
         this.frame = frame;
-
+        this.nomLibelle = nomLibelle;
+        
         remplirPanel();
         frame.setVisible(true);
     }
-
+    
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getLesMateriels().size()][5];
+        Object[][] donnees = new Object[Database.getLesMateriels(nomLibelle).size()][4];
 
         tableModel = new DefaultTableModel();
         tableModel.addColumn("id");
         tableModel.addColumn("nom");
         tableModel.addColumn("longueur");
         tableModel.addColumn("largeur");
-        tableModel.addColumn("etat");
         
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
-        for (int i = 0; i < Database.getLesMateriels().size(); i++) {
-            donnees[i][0] = Database.getLesMateriels().get(i).getId();
-            donnees[i][1] = Database.getLesMateriels().get(i).getNom();
-            donnees[i][2] = Database.getLesMateriels().get(i).getLongueur();
-            donnees[i][3] = Database.getLesMateriels().get(i).getLargeur();
+        for (int i = 0; i < Database.getLesMateriels(nomLibelle).size(); i++) {
+            donnees[i][0] = Database.getLesMateriels(nomLibelle).get(i).getId();
+            donnees[i][1] = Database.getLesMateriels(nomLibelle).get(i).getNom();
+            donnees[i][2] = Database.getLesMateriels(nomLibelle).get(i).getLongueur();
+            donnees[i][3] = Database.getLesMateriels(nomLibelle).get(i).getLargeur();
             tableModel.addRow(donnees[i]);
         }
+        
         
         supprimerButton = new JButton("Supprimer");
         supprimerButton.setBounds(175, 270, 150, 25);
@@ -112,8 +114,5 @@ public class VueGestion extends JPanel implements ActionListener {
                  }
             }
         }
-    //t
-    
 
 }
-    
