@@ -137,13 +137,13 @@ public class VueCalendrier extends JPanel implements ActionListener {
         this.frame.setContentPane(this);
         this.frame.revalidate();
   
-        Date dateSelected = (Date) datePanel.getModel().getValue();
+        Date dateSelectedDebut = (Date) datePanel.getModel().getValue();
         java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        String dateFormatedDate = fmt.format(dateSelected); 
+        String dateFormatedDateDebut = fmt.format(dateSelectedDebut); 
         
-        Date dateSelected2= (Date) datePanel2.getModel().getValue();
+        Date dateSelectedFin= (Date) datePanel2.getModel().getValue();
         java.text.SimpleDateFormat fmt2 = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        String dateFormatedDate2 = fmt2.format(dateSelected2);
+        String dateFormatedDateFin = fmt2.format(dateSelectedFin);
         
     	String data = "" + cb.getItemAt(cb.getSelectedIndex()); 
     	String data2 = "" + cb2.getItemAt(cb2.getSelectedIndex()); 
@@ -156,18 +156,11 @@ public class VueCalendrier extends JPanel implements ActionListener {
     	String test2 = splited2[3];
     	String heureFin = test2.substring(0,5);
    
-        
-       /* System.out.println(dateFormatedDate);
-        System.out.println(dateFormatedDate2); 
-    	System.out.println(heureDebut);
-    	System.out.println(heureFin);*/
-    	Database.emprunterObjetDate(dateFormatedDate,id);
-
-        //Database.reserverObjet(id);
+    	System.out.println("dateFormated : " + dateFormatedDateDebut + " " + dateFormatedDateFin + " " + heureDebut + " " + heureFin);
     	
-    	
-    	
-    	//Database.emprunterObjet(dateFormatedDate,dateFormatedDate2,heureDebut,heureFin,login,id);
+    	if(Database.emprunterObjetDate(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,id)) {
+    		Database.emprunterObjet(dateFormatedDateDebut,dateFormatedDateFin,heureDebut,heureFin,login,id);
+    	}
 	}
 
 }

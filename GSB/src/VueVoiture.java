@@ -6,7 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class VueVehicule extends JPanel implements ActionListener {
+public class VueVoiture extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
@@ -17,7 +17,7 @@ public class VueVehicule extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1L;
 
-    public VueVehicule(JFrame frame, String nomLibelle, String login) {
+    public VueVoiture(JFrame frame, String nomLibelle, String login) {
         this.login = login;
         this.frame = frame;
         this.nomLibelle = nomLibelle;
@@ -28,22 +28,20 @@ public class VueVehicule extends JPanel implements ActionListener {
 
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getLesVehicules(nomLibelle).size()][5];
+        Object[][] donnees = new Object[Database.getLesMateriels(nomLibelle).size()][4];
 
         tableModel = new DefaultTableModel();
-        tableModel.addColumn("code");
-        tableModel.addColumn("immatriculation");
-        tableModel.addColumn("modèle");
-        tableModel.addColumn("marque");
-        tableModel.addColumn("nombre de places");
+        tableModel.addColumn("id");
+        tableModel.addColumn("nom");
+        tableModel.addColumn("longueur");
+        tableModel.addColumn("largeur");
 
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
-        for (int i = 0; i < Database.getLesVehicules(nomLibelle).size(); i++) {
-            donnees[i][0] = Database.getLesVehicules(nomLibelle).get(i).getCode();
-            donnees[i][2] = Database.getLesVehicules(nomLibelle).get(i).getImmatriculation();
-            donnees[i][1] = Database.getLesVehicules(nomLibelle).get(i).getModele();
-            donnees[i][3] = Database.getLesVehicules(nomLibelle).get(i).getMarque();
-            donnees[i][4] = Database.getLesVehicules(nomLibelle).get(i).getNbPlaces();
+        for (int i = 0; i < Database.getLesMateriels(nomLibelle).size(); i++) {
+            donnees[i][0] = Database.getLesMateriels(nomLibelle).get(i).getId();
+            donnees[i][1] = Database.getLesMateriels(nomLibelle).get(i).getNom();
+            donnees[i][2] = Database.getLesMateriels(nomLibelle).get(i).getLongueur();
+            donnees[i][3] = Database.getLesMateriels(nomLibelle).get(i).getLargeur();
             tableModel.addRow(donnees[i]);
         }
 

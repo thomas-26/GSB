@@ -6,7 +6,7 @@ import java.util.Date;
 public class Database {
 	private static Connection connexion;
 	private static PreparedStatement preparedStatement, preparedStatement2, preparedStatement3;
-	private static ResultSet result, resultObjets, resultLibelle, resultNbLibelle, resultEmprunt;
+	private static ResultSet result, resultObjets, resultLibelle, resultNbLibelle, resultEmprunt, resultVehicules;
 	private static int resultInsert, resultInsert2, resultInsert3;
 		
 	/* fonction de connexion à la base de données 
@@ -18,7 +18,7 @@ public class Database {
 	public static void connexionBdd() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","sio","slam");
+			connexion = DriverManager.getConnection("jdbc:mysql://localhost/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
 			connexion.createStatement();
 		}
 		
@@ -198,6 +198,32 @@ public class Database {
 		return lesMateriels;
 	}
 	
+	public static ArrayList<Vehicule> getLesVehicules(String nomLibelle) {
+		ArrayList<Vehicule> lesVehicules = new ArrayList<Vehicule>();
+		try {
+			connexionBdd();
+			String rsObjets = "select v.code, immat, modele, marque, nbplaces from vehicule v, type_vehicule where v.code = type_vehicule.code and libelle = ?;";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			preparedStatement.setString(1, nomLibelle);
+			resultVehicules = preparedStatement.executeQuery();
+
+			while (resultVehicules.next()) {
+				int code = resultVehicules.getInt("code");
+				String immat = resultVehicules.getString("immat");
+				String modele = resultVehicules.getString("modele");
+				String marque = resultVehicules.getString("marque");
+				int nbplaces = resultVehicules.getInt("nbplaces");
+
+				lesVehicules.add(new Vehicule(code, immat, modele, marque, nbplaces));
+			}
+			resultVehicules.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesVehicules;
+	}
+	
 	/* fonction de suppression du rôle de l'utilisateur connecté
 	*
 	* @param numero
@@ -215,6 +241,31 @@ public class Database {
 			PreparedStatement statement2 = connexion.prepareStatement("delete from objet where id = ?;");
 			statement2.setInt(1, id);
 			statement2.executeUpdate();
+			etat = true;
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return etat;
+	}
+	
+	/*
+	 * fonction de suppression du rôle de l'utilisateur connecté
+	 *
+	 * @param numero
+	 * 
+	 * @exception SQLException au cas où il y aurait un problème lors de la
+	 * déconnexion de la bdd
+	 * 
+	 * @return un booléen qui contient vrai si le matériel a bien été supprimé
+	 */
+	public static boolean supprimerVehicule(int id) {
+		boolean etat = false;
+		try {
+			connexionBdd();
+			PreparedStatement statement = connexion.prepareStatement("delete from vehicule where code = ?;");
+			statement.setInt(1, id);
+			statement.executeUpdate();
 			etat = true;
 			deconnexionBdd();
 		} catch (SQLException e) {
@@ -249,20 +300,19 @@ public class Database {
 		return etat;
 	}
 	
-	/* fonction de suppression
-	* @param id
-	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
-	* @return un booléen qui contient le résultat de la mise à jour
-	*/
-	public static boolean reserverObjet(int id) {
+	public static boolean rechercherVehicule(int idVehicule) {
 		boolean etat = false;
 		try {
 			connexionBdd();
-			PreparedStatement statement = connexion.prepareStatement("update objet set etat = 'emprunte' where id = ?;");
-			statement.setInt(1, id);
-			statement.executeUpdate();
-			
-			etat = true;
+			PreparedStatement statement = connexion.prepareStatement("select count(code) as nb from vehicule where code = ?;");
+			statement.setInt(1, idVehicule);
+			resultObjets = statement.executeQuery();
+			if (resultObjets.next()) {
+				if (resultObjets.getInt("nb") == 1) {
+					etat = true;
+				}
+			}
+			resultObjets.close();
 			deconnexionBdd();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -305,6 +355,43 @@ public class Database {
 			e.printStackTrace();
 		}
 		return resultInsert + resultInsert2 + resultInsert3;
+	}
+	
+	/*
+	 * fonction qui ajoute un visiteur avec les données passées en paramètre
+	 * 
+	 * @param id, nom, etat, longueur, largeur, codeMateriel, typemateriel
+	 * 
+	 * @exception SQLException au cas où il y aurait un problème lors de la
+	 * déconnexion de la bdd
+	 * 
+	 * @return un entier qui contient le résultat des requetes
+	 */
+	
+	public static int ajouterVehicule(int code, String immatriculation, String modele, String marque, int nbplaces, String libellevehicule) {
+		try {
+			connexionBdd();
+			String rsInsert1 = "insert into type_vehicule (libelle) VALUES (?);";
+			preparedStatement3 = connexion.prepareStatement(rsInsert1);
+			preparedStatement3.setString(1, libellevehicule);
+			preparedStatement3.executeUpdate();
+			resultInsert3 = preparedStatement3.executeUpdate();
+			
+			String rsInsert = "insert into vehicule (code, immat, modele, marque, nbplaces) VALUES (?, ?, ?, ?, ?);";
+			preparedStatement = connexion.prepareStatement(rsInsert);
+			preparedStatement.setInt(1, code);
+			preparedStatement.setString(2, immatriculation);
+			preparedStatement.setString(3, modele);
+			preparedStatement.setString(4, marque);
+			preparedStatement.setInt(5, nbplaces);
+			
+			resultInsert = preparedStatement.executeUpdate();
+
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultInsert + resultInsert3;
 	}
 	
 	/* fonction qui compte le nombre d'objets
@@ -382,6 +469,35 @@ public class Database {
 		return lesNoms;
 	}
 	
+	/*
+	 * fonction qui récupére les libellés de tous les types de véhicules
+	 *
+	 * @exception SQLException au cas où il y aurait un problème lors de la
+	 * déconnexion de la bdd
+	 * 
+	 * @return les noms des véhicules sous forme de ArrayList
+	 */
+	public static ArrayList<String> getLibelleVehicule() {
+		ArrayList<String> lesNoms = new ArrayList<String>();
+		try {
+			connexionBdd();
+			String rsLibelle = "select libelle from type_vehicule;";
+
+			preparedStatement = connexion.prepareStatement(rsLibelle);
+			resultLibelle = preparedStatement.executeQuery();
+
+			while (resultLibelle.next()) {
+				lesNoms.add(resultLibelle.getString("libelle"));
+			}
+			resultLibelle.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesNoms;
+	}
+
+	
 	/* fonction qui compte le nombre de libelle
 	*
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
@@ -402,6 +518,35 @@ public class Database {
 			
 			resultNbLibelle.close();
 			deconnexionBdd();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return nbLibelle;
+	}
+	
+	/*
+	 * fonction qui compte le nombre de libelle différents des véhicules
+	 *
+	 * @exception SQLException au cas où il y aurait un problème lors de la
+	 * déconnexion de la bdd
+	 * 
+	 * @return un entier qui représente le nombre de libellés des véhicules
+	 */
+	public static int getNbLibelleVehicule() {
+		int nbLibelle = 0;
+		try {
+			connexionBdd();
+			String rsNbObjets = "select count(distinct libelle) as nbLibelle from type_vehicule;";
+			preparedStatement = connexion.prepareStatement(rsNbObjets);
+			resultNbLibelle = preparedStatement.executeQuery();
+
+			if (resultNbLibelle.next()) {
+				int getNb = resultNbLibelle.getInt("nbLibelle");
+				nbLibelle = getNb;
+			}
+
+			resultNbLibelle.close();
+			deconnexionBdd();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -505,32 +650,39 @@ public class Database {
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @returne un entier qui contient le résultat des requetes
 	*/
-	public static boolean emprunterObjetDate(String dateDebut, int idObjet) {
+	public static boolean emprunterObjetDate(String dateDebut, String dateFin, String heureDebut, String heureFin, int idObjet) {
 		boolean rep = true;
 		try {
 			connexionBdd();
-			String rsSelect = "select datedebut, datefin from emprunt where idObjet = ?;";
+			String rsSelect = "select datedebut, datefin, heuredebut, heurefin from emprunt where idObjet = ?;";
 			preparedStatement = connexion.prepareStatement(rsSelect);
 			preparedStatement.setInt(1, idObjet);
 			resultEmprunt = preparedStatement.executeQuery();
 			while (resultEmprunt.next()) {
-				rep = false;
 				String uneDateDebut = resultEmprunt.getString(1);
 				String uneDateFin = resultEmprunt.getString(2);
-				System.out.println(uneDateDebut + " " + uneDateFin);
-				String d = "2020-12-02";
-				String d2 = "2020-12-04";
+				String uneHeureDebut = resultEmprunt.getString(3);
+				String uneHeureFin = resultEmprunt.getString(4);
+				System.out.println(uneDateDebut + " " + uneDateFin + " " + uneHeureDebut + " " + uneHeureFin);
 				SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd"); 
 				try {
-				    Date datePasseDebut = formatter2.parse(d); 
-				    Date datePasseFin = formatter2.parse(d2); 
+				    Date datePasseDebut = formatter2.parse(dateDebut); 
+				    Date datePasseFin = formatter2.parse(dateFin); 
 				    Date laDateDebut = formatter2.parse(uneDateDebut); 
 				    Date laDateFin = formatter2.parse(uneDateFin); 
-				    if(datePasseDebut.after(laDateDebut) && datePasseDebut.before(laDateFin) || (datePasseFin.after(laDateDebut) && datePasseFin.before(laDateFin))) {
-						System.out.println("incroyable");
+				    if((datePasseDebut.before(laDateDebut) && datePasseFin.after(laDateFin)) 
+				    		|| (datePasseDebut.after(laDateDebut) && datePasseDebut.before(laDateFin)) 
+				    		|| (datePasseDebut.before(laDateDebut)) && (datePasseFin.after(laDateDebut)) 
+				    		|| (datePasseDebut.equals(laDateDebut))) 
+				    {
+				    	rep = false;
 					}
+				    else if(datePasseFin.equals(laDateDebut)) {
+				    	rep = false;
+				    	System.out.println("meme date");
+				    }
 				    else {
-				    	System.out.println("oh no");
+				    	System.out.println("incroyable");
 				    }
 				 } catch (java.text.ParseException e) {
 			            // TODO Auto-generated catch block
