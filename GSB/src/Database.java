@@ -18,7 +18,7 @@ public class Database {
 	public static void connexionBdd() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connexion = DriverManager.getConnection("jdbc:mysql://localhost/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
+			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","sio","slam");
 			connexion.createStatement();
 		}
 		
@@ -326,6 +326,7 @@ public class Database {
 	* @return un entier qui contient le résultat des requetes
 	*/
 	public static int ajouterObjet(int id, String nom, int longueur, int largeur, int codeMateriel, String typemateriel) {
+		int codeAjout = 0;		
 		try {
 			connexionBdd();
 			String rsInsert = "insert into objet (id, nom) VALUES (?, ?);";
@@ -334,19 +335,20 @@ public class Database {
 			preparedStatement.setString(2, nom);
 			resultInsert = preparedStatement.executeUpdate();
 			
-			String rsInsert3 = "insert into type_materiel (libelle) VALUES (?);";
-			preparedStatement3 = connexion.prepareStatement(rsInsert3);
-			preparedStatement3.setString(1, typemateriel);
-			preparedStatement3.executeUpdate();
-			resultInsert3 = preparedStatement3.executeUpdate();
+			PreparedStatement statement = connexion.prepareStatement("select distinct codemateriel as codeRecupere from materiel M, type_materiel T where M.codemateriel = T.code and libelle = ?;");
+			statement.setString(1, typemateriel);
+			resultObjets = statement.executeQuery();
 			
+			if (resultObjets.next()) {
+				codeAjout = resultObjets.getInt("codeRecupere");
+			}
 			
 			String rsInsert2 = "insert into materiel (code, longueur, largeur, codemateriel) VALUES (?, ?, ?, ?);";
 			preparedStatement2 = connexion.prepareStatement(rsInsert2);
 			preparedStatement2.setInt(1, id);
 			preparedStatement2.setInt(2, longueur);
 			preparedStatement2.setInt(3, largeur);
-			preparedStatement2.setInt(4, codeMateriel);
+			preparedStatement2.setInt(4, codeAjout);
 			preparedStatement2.executeUpdate();
 			resultInsert2 = preparedStatement2.executeUpdate();
 			
@@ -369,21 +371,31 @@ public class Database {
 	 */
 	
 	public static int ajouterVehicule(int code, String immatriculation, String modele, String marque, int nbplaces, String libellevehicule) {
+		int codeAjout = 0;		
 		try {
 			connexionBdd();
-			String rsInsert1 = "insert into type_vehicule (libelle) VALUES (?);";
-			preparedStatement3 = connexion.prepareStatement(rsInsert1);
-			preparedStatement3.setString(1, libellevehicule);
-			preparedStatement3.executeUpdate();
-			resultInsert3 = preparedStatement3.executeUpdate();
-			
-			String rsInsert = "insert into vehicule (code, immat, modele, marque, nbplaces) VALUES (?, ?, ?, ?, ?);";
+			String rsInsert = "insert into objet (id, nom) VALUES (?, ?);";
 			preparedStatement = connexion.prepareStatement(rsInsert);
+			preparedStatement.setInt(1, code);
+			preparedStatement.setString(2, modele);
+			resultInsert = preparedStatement.executeUpdate();
+			
+			PreparedStatement statement = connexion.prepareStatement("select distinct T.code as codeRecupere from vehicule V, type_vehicule T where V.codevehicule = T.code and libelle = ?;");
+			statement.setString(1, libellevehicule);
+			resultObjets = statement.executeQuery();
+			
+			if (resultObjets.next()) {
+				codeAjout = resultObjets.getInt("codeRecupere");
+			}
+			
+			String rsInsert2 = "insert into vehicule (code, immat, modele, marque, nbplaces, codevehicule) VALUES (?, ?, ?, ?, ?, ?);";
+			preparedStatement = connexion.prepareStatement(rsInsert2);
 			preparedStatement.setInt(1, code);
 			preparedStatement.setString(2, immatriculation);
 			preparedStatement.setString(3, modele);
 			preparedStatement.setString(4, marque);
 			preparedStatement.setInt(5, nbplaces);
+			preparedStatement.setInt(6, codeAjout);
 			
 			resultInsert = preparedStatement.executeUpdate();
 
@@ -679,7 +691,6 @@ public class Database {
 		    	int heureDebutInt=Integer.parseInt(heureDebutString); 
 		    	int heureFinInt=Integer.parseInt(heureFinString); 
 				
-				System.out.println(heureDebutInt + " " + heureFinInt + " " + uneHeureDebutInt + " " + uneHeureFinInt);
 				SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd"); 
 				try {
 				    Date datePasseDebut = formatter2.parse(dateDebut); 
@@ -715,5 +726,37 @@ public class Database {
 		}
 		return rep;
 	}	
+	
+	/* Fonction qui récupère les objets empruntés
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une liset d'objets contenant les objets empruntés
+	*/ 
+	public static ArrayList<Consulter> getLesMaterielsEmpruntesParVisiteur(String login) {
+		ArrayList<Consulter> lesEmprunts = new ArrayList<Consulter>();
+		try {
+			connexionBdd();
+			String rsObjets = "select idemprunt, datedebut, datefin, heuredebut, heurefin, idobjet from emprunt where loginvisiteur = ?;";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			preparedStatement.setString(1, login);
+			resultObjets = preparedStatement.executeQuery();
+			
+			while (resultObjets.next()) {
+				int id = resultObjets.getInt("idemprunt");
+				Date dateDeDebut = resultObjets.getDate("datedebut");
+				Date dateDeFin = resultObjets.getDate("datefin");
+				Time heureDeDebut = resultObjets.getTime("heuredebut");
+				Time heureDeFin = resultObjets.getTime("heurefin");
+				int idObjet = resultObjets.getInt("idobjet");
+				
+				lesEmprunts.add(new Consulter(id, dateDeDebut, dateDeFin, heureDeDebut, heureDeFin, idObjet));
+			}
+			resultObjets.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesEmprunts;
+	}
 	
 }

@@ -20,7 +20,7 @@ public class VueRechercherObjet extends JPanel implements ActionListener {
 		this.setLayout(null);
 		
 		/* texte informatif */
-		welcome = new JLabel("Rechercher un objet (numéro)");
+		welcome = new JLabel("Rechercher un matériel (numéro)");
 		welcome.setFont(new Font("Arial", Font.BOLD, 14));
 		welcome.setBounds(130, 40, 380, 100);
 		
@@ -53,7 +53,7 @@ public class VueRechercherObjet extends JPanel implements ActionListener {
 		int numero =  Integer.parseInt(jtfNumero.getText());
 			if(Database.rechercherObjet(numero)) {
 				JOptionPane.showMessageDialog(rechercherButton, "Le matériel est présent dans le catalogue !", "Félicitation", JOptionPane.INFORMATION_MESSAGE);
-			}//t
+			}
 			else {
 				JOptionPane.showMessageDialog(rechercherButton, "Le matériel n'existe pas dans le catalogue !", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
