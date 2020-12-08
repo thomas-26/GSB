@@ -1,3 +1,4 @@
+// Classe Véhicule 
 public class Vehicule {
 
 	private String immatriculation, modele, marque;

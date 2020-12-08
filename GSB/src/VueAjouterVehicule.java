@@ -123,6 +123,16 @@ public class VueAjouterVehicule extends JPanel implements ActionListener {
 		repaint();
 		revalidate();
 	}
+	
+	/*
+	 * fonction qui affiche une boite de dialogue pour signaler une erreur lors de
+	 * l'ajout du à la plaque d'immatriculation
+	 */
+	public void probImmat() {
+		JOptionPane.showMessageDialog(this, "Immatriculation incorrecte.");
+		repaint();
+		revalidate();
+	}
 
 	/*
 	 * fonction qui affiche une boite de dialogue pour signaler une erreur lors de
@@ -151,7 +161,7 @@ public class VueAjouterVehicule extends JPanel implements ActionListener {
 			String marque = marqueText.getText();
 			int nbplaces = Integer.parseInt(nbPlacesText.getText());
 			String typevehicule = lesVehicules.getSelectedItem().toString();
-
+	
 			try {
 				/* reste du code à mettre dedans */
 			} catch (NumberFormatException exception) {
@@ -170,13 +180,17 @@ public class VueAjouterVehicule extends JPanel implements ActionListener {
 		    */
 			
 			if (Database.rechercherVehicule(code) == false) {
-				Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule);
-				System.out.println(Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule));
-				/*
-				 * appelle la boite de dialogue en fonction du résultat renvoyé par la fonction
-				 */
-				if (Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule) == 2) {
-					added();
+				if(immatriculation.matches("[A-Za-z]{2}-[1-9]{3}-[A-Za-z]{2}")) {
+					Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule);
+					//System.out.println(Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule));
+					/*
+					 * appelle la boite de dialogue en fonction du résultat renvoyé par la fonction
+					 */
+					if (Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule) == 2) {
+						added(); // ne rentre pas ici
+					}
+				} else {
+					probImmat();
 				}
 			} else {
 				notAdded();
