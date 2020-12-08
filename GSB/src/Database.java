@@ -1,4 +1,5 @@
 import java.sql.*;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -196,6 +197,32 @@ public class Database {
 			e.printStackTrace();
 		}
 		return lesMateriels;
+	}
+	
+	/* Fonction qui récupère les dates pour un objet emprunté
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une liste de contenant les date d'un objet emprunté
+	*/ 
+	public static ArrayList<LesDates> getLesDatesEmprunts() {
+		ArrayList<LesDates> lesDates = new ArrayList<LesDates>();
+		try {
+			connexionBdd();
+			String rsObjets = "select datedebut, datefin from emprunt;";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			resultObjets = preparedStatement.executeQuery();
+			
+			while (resultObjets.next()) {
+				Date dateDebut = resultObjets.getDate("datedebut");
+				Date dateDeFin = resultObjets.getDate("datefin");		
+				lesDates.add(new LesDates(dateDebut,dateDeFin));
+			}
+			resultObjets.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesDates;
 	}
 	
 	public static ArrayList<Vehicule> getLesVehicules(String nomLibelle) {

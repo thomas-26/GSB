@@ -1,13 +1,17 @@
-import javax.swing.*;
-
-import org.jdatepicker.JDateComponentFactory;
-import org.jdatepicker.JDatePicker;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel; 
 
 public class VueStatistique extends JPanel implements ActionListener {
 	/**
@@ -18,6 +22,7 @@ public class VueStatistique extends JPanel implements ActionListener {
 	private JLabel welcome;
 	private JComboBox cb;
 	private JFrame frame;
+	private Date dateActuelle;
 	
 	public VueStatistique(JFrame frame) {
 		this.frame = frame;
@@ -75,6 +80,11 @@ public class VueStatistique extends JPanel implements ActionListener {
 	        		d.showMessageDialog( this.frame, data + " : " + Database.getNbObjets());
 	        		break;
 	        	case 1:
+		        	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		        	Date dateString = new Date();
+		        	String formatString = dateFormat.format(dateString);
+		        	System.out.println(formatString);
+		        	Database.getLesDatesEmprunts();
 	        		d.showMessageDialog( this.frame, data + " : " + Database.getNbObjetsEmpruntes());
 	        		break;
 	        	case 2:
