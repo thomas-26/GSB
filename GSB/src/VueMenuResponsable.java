@@ -13,8 +13,8 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1L;
     private JMenuBar barre;
-    private JMenu menu, sousmenu, sousmenu2, ajouter, rechercher;
-    private JMenuItem itemAjouter, itemRechercher, itemAjouterV, itemRechercherV;
+    private JMenu menu, sousmenu, sousmenu2, ajouter;
+    private JMenuItem itemAjouter, itemRechercher, itemAjouterV;
     private JLabel lblVisiteur;
     private JLabel lblLogin;
     private JButton deconnexion;
@@ -24,14 +24,14 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
     public VueMenuResponsable(JFrame frame, String login) {
         this.frame = frame;
         barre = new JMenuBar();
-        menu = new JMenu("Gérer");
+        menu = new JMenu("GÃ©rer");
 
-        lblVisiteur = new JLabel("Connecté en tant que " + Database.getRole(login) + " : ");
+        lblVisiteur = new JLabel("ConnectÃ© en tant que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
         lblLogin.setForeground(Color.GREEN.darker());
 
-        /* bouton de déconnexion */
-        deconnexion = new JButton("Déconnexion");
+        /* bouton de dÃ©connexion */
+        deconnexion = new JButton("DÃ©connexion");
         deconnexion.setBackground(new Color(59, 89, 182));
         deconnexion.setForeground(Color.WHITE);
         deconnexion.setFocusPainted(false);
@@ -39,37 +39,33 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
         deconnexion.addActionListener(this);
 
         sousmenu = new JMenu("Supprimer un produit");
-        sousmenu2 = new JMenu("Supprimer un véhicule");
+        sousmenu2 = new JMenu("Supprimer un vÃ©hicule");
         
         ajouter = new JMenu("Ajouter");
         
-        rechercher = new JMenu("Rechercher");
-        
         itemAjouter = new JMenuItem("Ajout un produit");
-        itemAjouterV = new JMenuItem("Ajouter un véhicule");
+        itemAjouterV = new JMenuItem("Ajouter un vÃ©hicule");
         
         itemRechercher = new JMenuItem("Rechercher un produit");
-        itemRechercherV = new JMenuItem("Rechercher un véhicule");
 
         itemAjouter.addActionListener(new VueAjouterObjet(frame));
         itemAjouterV.addActionListener(new VueAjouterVehicule(frame));
         itemRechercher.addActionListener(new VueRechercherObjet(frame));
-        itemRechercherV.addActionListener(new VueRechercherVehicule(frame));
 
-        /* on créé une liste qui va nous servir à stocker nos types de produits */
+        /* on crÃ©Ã© une liste qui va nous servir Ã  stocker nos types de produits */
         ArrayList<String> liste = new ArrayList<String>();
         ArrayList<String> listevehicule = new ArrayList<String>();
         
         /*
-         * on parcours le nombre de types de produits différent et on ajoute chaque type
-         * à notre liste précedemment créée
+         * on parcours le nombre de types de produits diffÃ©rent et on ajoute chaque type
+         * Ã  notre liste prÃ©cedemment crÃ©Ã©e
          */
         for (int i = 0; i < Database.getNbLibelle(); i++) {
             liste.add(Database.getLibelle().get(i));
         }
 
         /*
-         * on créé les JMenu Item qui vont accueillir les données de notre liste et on
+         * on crÃ©Ã© les JMenu Item qui vont accueillir les donnÃ©es de notre liste et on
          * ajoute chaque menu item au sous menu
          */
         for (i = 0; i < liste.size(); i++) {
@@ -78,7 +74,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
 
             Jmi.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    /* on passe les variables en paramètre */
+                    /* on passe les variables en paramÃ¨tre */
                     VueGestion gestion = new VueGestion(frame, Jmi.getText());
                     frame.setContentPane(gestion);
                     frame.setVisible(true);
@@ -89,15 +85,15 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
 
         
         /*
-         * on parcours le nombre de types de produits différent et on ajoute chaque type
-         * à notre liste précedemment créée
+         * on parcours le nombre de types de produits diffÃ©rent et on ajoute chaque type
+         * Ã  notre liste prÃ©cedemment crÃ©Ã©e
          */
         for (int i = 0; i < Database.getNbLibelleVehicule(); i++) {
         	listevehicule.add(Database.getLibelleVehicule().get(i));
         }
 
         /*
-         * on créé les JMenu Item qui vont accueillir les données de notre liste et on
+         * on crÃ©Ã© les JMenu Item qui vont accueillir les donnÃ©es de notre liste et on
          * ajoute chaque menu item au sous menu
          */
         for (i = 0; i < listevehicule.size(); i++) {
@@ -106,7 +102,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
 
             Jmi2.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    /* on passe les variables en paramètre */
+                    /* on passe les variables en paramÃ¨tre */
                     VueGestionVehicule gestionv = new VueGestionVehicule(frame, Jmi2.getText(), login);
                     frame.setContentPane(gestionv);
                     frame.setVisible(true);
@@ -114,20 +110,17 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
             });
             sousmenu2.add(Jmi2);
         }
-        
+        	
         ajouter.add(itemAjouter);
         ajouter.add(itemAjouterV);
         
+        
         menu.addSeparator();
         
-        rechercher.add(itemRechercher);
-        rechercher.add(itemRechercherV);
-                
         menu.add(ajouter);
-        menu.add(rechercher);
-        
         menu.add(sousmenu);
         menu.add(sousmenu2);
+        menu.add(itemRechercher);
         
         barre.add(menu);
         barre.add(lblVisiteur);
@@ -146,7 +139,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent arg0) {
         /*
-         * bouton de déconnexion on clear tout le panel et les éléments de notre fenetre
+         * bouton de dÃ©connexion on clear tout le panel et les Ã©lÃ©ments de notre fenetre
          * puis on retourne sur la vue de connexion
          */
         if (arg0.getSource() == deconnexion) {

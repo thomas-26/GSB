@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 
 import java.awt.Color;
@@ -100,14 +101,6 @@ public class VueMenuVisiteur extends JPanel implements ActionListener {
         }
         
         JMenuItem Jmi3 = new JMenuItem("Consulter emprunts");
-        Jmi3.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                /* on passe les variables en paramètre */
-                VueConsulter consulter = new VueConsulter(frame, login);
-                frame.setContentPane(consulter);
-                frame.setVisible(true);
-            }
-        });
         
         menu.addSeparator();
 

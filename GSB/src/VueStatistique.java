@@ -2,9 +2,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,7 +22,7 @@ public class VueStatistique extends JPanel implements ActionListener {
 	private JLabel welcome;
 	private JComboBox cb;
 	private JFrame frame;
-	private Date dateActuelle;
+	private Date dateActuelle, dateDebut, dateFin;
 	
 	public VueStatistique(JFrame frame) {
 		this.frame = frame;
@@ -82,10 +82,28 @@ public class VueStatistique extends JPanel implements ActionListener {
 	        	case 1:
 		        	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		        	Date dateString = new Date();
-		        	String formatString = dateFormat.format(dateString);
-		        	System.out.println(formatString);
-		        	Database.getLesDatesEmprunts();
-	        		d.showMessageDialog( this.frame, data + " : " + Database.getNbObjetsEmpruntes());
+		        	String dateActuelle = dateFormat.format(dateString);
+		        	
+		        	int compteur = 0;
+
+		            for (int i = 0; i < Database.getLesDatesEmprunts().size(); i++) {
+		                dateDebut = Database.getLesDatesEmprunts().get(i).getDateDebut();
+		                dateFin = Database.getLesDatesEmprunts().get(i).getDateFin();   
+
+		                try {
+		                	 String sDate1="2020-12-08";  
+				             Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
+				             if(date1.before(dateFin) && date1.after(dateDebut)) {
+				                	compteur += 1;
+				             }
+		                } catch (java.text.ParseException e2) {
+		                    // TODO Auto-generated catch block
+		                    e2.printStackTrace();
+		                }		                
+		                
+		            }
+		        	
+	        		d.showMessageDialog(this.frame, data + " : " + compteur);
 	        		break;
 	        	case 2:
 	        		/* on passe les variables en paramètre */
