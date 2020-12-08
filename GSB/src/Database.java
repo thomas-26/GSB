@@ -225,6 +225,37 @@ public class Database {
 		return lesDates;
 	}
 	
+	/* Fonction qui récupère les dates pour un objet emprunté
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une liste de contenant les date d'un objet emprunté
+	*/ 
+	public static ArrayList<LesObjets> getLesObjetsEmpruntes() {
+		ArrayList<LesObjets> lesObjets = new ArrayList<LesObjets>();
+		try {
+			connexionBdd();
+			String rsObjets = "select idObjet, nom, datedebut, datefin, loginvisiteur \n" + 
+					"from emprunt E, objet O \n" + 
+					"where E.idobjet = O.id;";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			resultObjets = preparedStatement.executeQuery();
+			
+			while (resultObjets.next()) {
+				int idObjet = resultObjets.getInt("idObjet");
+				String nomObjet = resultObjets.getString("nom");		
+				Date dateDebut = resultObjets.getDate("datedebut");
+				Date dateDeFin = resultObjets.getDate("datefin");		
+				String loginVisiteur = resultObjets.getString("loginvisiteur");
+				lesObjets.add(new LesObjets(idObjet,nomObjet,dateDebut,dateDeFin,loginVisiteur));
+			}
+			resultObjets.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesObjets;
+	}
+	
 	public static ArrayList<Vehicule> getLesVehicules(String nomLibelle) {
 		ArrayList<Vehicule> lesVehicules = new ArrayList<Vehicule>();
 		try {

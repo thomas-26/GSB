@@ -34,7 +34,7 @@ public class VueStatistique extends JPanel implements ActionListener {
 		welcome.setBounds(150, 0, 380, 100);
 		
 		/* JComboBox */
-		String statistiques[]={"Nombre d'objets","Nombre objets empruntés","Nombre matériels empruntés triés","Nombre d'emprunt par visiteur"};        
+		String statistiques[]={"Nombre d'objets","Nombre objets empruntés","Nombre matériels empruntés triés","Nombre d'emprunt par visiteur","Objets empruntés"};        
 		cb = new JComboBox(statistiques);    
 		cb.setBounds(150, 100,200,20);    
         
@@ -115,6 +115,35 @@ public class VueStatistique extends JPanel implements ActionListener {
 	        		/* on passe les variables en paramètre */
                 	VueEmpruntVisiteur empruntVisiteur = new VueEmpruntVisiteur(frame);
                 	this.frame.setContentPane(empruntVisiteur);
+	        	    this.frame.revalidate();
+	        		break;
+	        	case 4:
+	        		
+	        		DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+		        	Date dateString2 = new Date();
+		        	String dateActuelle2 = dateFormat2.format(dateString2);
+		        	
+		        	int compteur2 = 0;
+
+		            for (int i = 0; i < Database.getLesDatesEmprunts().size(); i++) {
+		                dateDebut = Database.getLesDatesEmprunts().get(i).getDateDebut();
+		                dateFin = Database.getLesDatesEmprunts().get(i).getDateFin();   
+
+		                try {
+		                	 String sDate1="2020-12-08";  
+				             Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
+				             if(date1.before(dateFin) && date1.after(dateDebut)) {
+				                	compteur2 += 1;
+				             }
+		                } catch (java.text.ParseException e2) {
+		                    // TODO Auto-generated catch block
+		                    e2.printStackTrace();
+		                }		                
+		                
+		            }
+	        		/* on passe les variables en paramètre */
+                	VueEmpruntObjets empruntObjets = new VueEmpruntObjets(frame);
+                	this.frame.setContentPane(empruntObjets);
 	        	    this.frame.revalidate();
 	        		break;
 	        }
