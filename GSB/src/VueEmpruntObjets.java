@@ -9,20 +9,18 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class VueConsulter extends JPanel implements ActionListener {
+public class VueEmpruntObjets extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton btnRetour;
-    private String login;
     /*
      *
      */
     private static final long serialVersionUID = 1L;
 
-    public VueConsulter(JFrame frame, String login) {
+    public VueEmpruntObjets(JFrame frame) {
         this.frame = frame;
-        this.login = login;
   
         remplirPanel();
         frame.setVisible(true);
@@ -30,24 +28,22 @@ public class VueConsulter extends JPanel implements ActionListener {
     
     public void remplirPanel() {
         /* création des titres de notre JTable */
-        Object[][] donnees = new Object[Database.getLesObjetsEmpruntes().size()][6];
+        Object[][] donnees = new Object[Database.getLesObjetsEmpruntes().size()][5];
 
         tableModel = new DefaultTableModel();
-        tableModel.addColumn("idEmprunt");
+        tableModel.addColumn("id");
+        tableModel.addColumn("nom");
         tableModel.addColumn("dateDebut");
         tableModel.addColumn("dateFin");
-        tableModel.addColumn("heureDebut");
-        tableModel.addColumn("heureFin");
-        tableModel.addColumn("idObjet");
+        tableModel.addColumn("loginVisiteur");
         
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
-        for (int i = 0; i < Database.getLesMaterielsEmpruntesParVisiteur(login).size(); i++) {
-            donnees[i][0] = Database.getLesMaterielsEmpruntesParVisiteur(login).get(i).getIdEmprunt();
-            donnees[i][1] = Database.getLesMaterielsEmpruntesParVisiteur(login).get(i).getDateDebut();
-            donnees[i][2] = Database.getLesMaterielsEmpruntesParVisiteur(login).get(i).getDateFin();
-            donnees[i][3] = Database.getLesMaterielsEmpruntesParVisiteur(login).get(i).getHeureDebut();
-            donnees[i][4] = Database.getLesMaterielsEmpruntesParVisiteur(login).get(i).getHeureFin();
-            donnees[i][5] = Database.getLesMaterielsEmpruntesParVisiteur(login).get(i).getIdObjet();
+        for (int i = 0; i < Database.getLesObjetsEmpruntes().size(); i++) {
+            donnees[i][0] = Database.getLesObjetsEmpruntes().get(i).getId();
+            donnees[i][1] = Database.getLesObjetsEmpruntes().get(i).getNom();
+            donnees[i][2] = Database.getLesObjetsEmpruntes().get(i).getDateDebut();
+            donnees[i][3] = Database.getLesObjetsEmpruntes().get(i).getDateFin();
+            donnees[i][4] = Database.getLesObjetsEmpruntes().get(i).getLogin();
             tableModel.addRow(donnees[i]);
         }
         
