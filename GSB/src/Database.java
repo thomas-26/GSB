@@ -19,7 +19,7 @@ public class Database {
 	public static void connexionBdd() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connexion = DriverManager.getConnection("jdbc:mysql://localhost/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
+			connexion = DriverManager.getConnection("jdbc:mysql://172.16.250.7/gsb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","sio","slam");
 			connexion.createStatement();
 		}
 		
@@ -538,7 +538,7 @@ public class Database {
 		}
 		return lesNoms;
 	}
-	
+
 	/*
 	 * fonction qui récupére les libellés de tous les types de véhicules
 	 *
@@ -715,7 +715,7 @@ public class Database {
 		return resultInsert;
 	}
 	
-	/* fonction qui récupère la date de début et de fin des emprunts pour 
+	/* fonction qui récupère la date de début et de fin des emprunts pour afficher un message selon l'état retourné
 	*
 	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
 	* @returne un entier qui contient le résultat des requetes
@@ -794,7 +794,7 @@ public class Database {
 		ArrayList<Consulter> lesEmprunts = new ArrayList<Consulter>();
 		try {
 			connexionBdd();
-			String rsObjets = "select idemprunt, datedebut, datefin, heuredebut, heurefin, idobjet from emprunt where loginvisiteur = ?;";
+			String rsObjets = "select idemprunt, datedebut, datefin, heuredebut, heurefin, idobjet from emprunt where loginvisiteur = ? order by datedebut;";
 			preparedStatement = connexion.prepareStatement(rsObjets);
 			preparedStatement.setString(1, login);
 			resultObjets = preparedStatement.executeQuery();
@@ -815,6 +815,70 @@ public class Database {
 			e.printStackTrace();
 		}
 		return lesEmprunts;
+	}
+	
+	/* Fonction qui récupère un objet spécifique
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une liste du matériel passé en paramètre
+	*/ 
+	public static ArrayList<Materiel> getUnMateriel(int id) {
+		ArrayList<Materiel> lesMateriels = new ArrayList<Materiel>();
+		try {
+			connexionBdd();
+			String rsObjets = "select id, nom, longueur, largeur, codemateriel FROM objet o, materiel m where o.id = m.code and id = ?;";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			preparedStatement.setInt(1, id);
+			resultObjets = preparedStatement.executeQuery();
+			
+			if (resultObjets.next()) {
+				int idObjet = resultObjets.getInt("id");
+				String nom = resultObjets.getString("nom");
+				float longueur = resultObjets.getFloat("longueur");
+				float largeur = resultObjets.getFloat("largeur");
+				int codeMateriel = resultObjets.getInt("codemateriel");
+				
+				lesMateriels.add(new Materiel(idObjet, nom, longueur, largeur, codeMateriel));
+			}
+			resultObjets.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesMateriels;
+	}
+	
+	/* Fonction qui récupère un objet spécifique
+	*
+	* @exception SQLException au cas où il y aurait un problème lors de la déconnexion de la bdd
+	* @return une liste du matériel passé en paramètre
+	*/ 
+	public static ArrayList<Vehicule> getUnVehicule(int id) {
+		ArrayList<Vehicule> lesVehicules = new ArrayList<Vehicule>();
+		try {
+			connexionBdd();
+			String rsObjets = "select id, nom, immat, modele, marque, nbplaces, codevehicule FROM objet o, vehicule v where o.id = v.code and id = ?;";
+			preparedStatement = connexion.prepareStatement(rsObjets);
+			preparedStatement.setInt(1, id);
+			resultObjets = preparedStatement.executeQuery();
+			
+			if (resultObjets.next()) {
+				int idObjet = resultObjets.getInt("id");
+				String nom = resultObjets.getString("nom");
+				String immat = resultObjets.getString("immat");
+				String modele = resultObjets.getString("modele");
+				String marque = resultObjets.getString("marque");
+				int nbplaces = resultObjets.getInt("nbplaces");
+				int codevehicule = resultObjets.getInt("codevehicule");
+				
+				lesVehicules.add(new Vehicule(idObjet, immat, modele, marque, nbplaces, codevehicule));
+			}
+			resultObjets.close();
+			deconnexionBdd();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lesVehicules;
 	}
 	
 }

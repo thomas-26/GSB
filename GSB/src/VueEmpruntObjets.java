@@ -9,16 +9,16 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueEmpruntObjts qui affiche les objets empruntés avec leur emprunteur
 public class VueEmpruntObjets extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton btnRetour;
-    /*
-     *
-     */
+
     private static final long serialVersionUID = 1L;
 
+    // Constructeur VueEmpruntObjets qui prend en paramètre la fenêtre
     public VueEmpruntObjets(JFrame frame) {
         this.frame = frame;
   

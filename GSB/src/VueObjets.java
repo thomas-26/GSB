@@ -10,17 +10,17 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueObjets qui affiche les objets
 public class VueObjets extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton reserverButton;
 	private String nomLibelle, login;
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 1L;
 
+    // Constructeur qui prend en paramètre la fenêtre, le nom de l'objet et le login du visiteur qui l'emprunte
     public VueObjets(JFrame frame, String nomLibelle, String login) {
     	this.login = login;
         this.frame = frame;

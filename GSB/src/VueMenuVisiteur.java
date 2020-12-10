@@ -7,11 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+// Classe VueMenuVisiteur qui affiche le menu pou le visiteur
 public class VueMenuVisiteur extends JPanel implements ActionListener {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private JMenuBar barre;
     private JMenu menu, sousmenu, sousmenu2;
@@ -20,7 +18,8 @@ public class VueMenuVisiteur extends JPanel implements ActionListener {
     private JButton deconnexion;
     private JFrame frame;
     private int i;
-
+    
+    // Constructeur qui prend en paramètre la fenêtre et le login
     public VueMenuVisiteur(JFrame frame, String login) {
         this.frame = frame;
         barre = new JMenuBar();
@@ -38,10 +37,11 @@ public class VueMenuVisiteur extends JPanel implements ActionListener {
         deconnexion.setFont(new Font("Arial", Font.BOLD, 12));
         deconnexion.addActionListener(this);
 
+        // sous menus dynamiques
         sousmenu = new JMenu("Emprunter un objet");
         sousmenu2 = new JMenu("Louer un véhicule");
 
-        /* on cr?? une liste qui va nous servir ? stocker nos types de produits */
+        /* on crée une liste qui va nous servir ? stocker nos types de produits */
         ArrayList<String> liste = new ArrayList<String>();
 
         ArrayList<String> listevehicule = new ArrayList<String>();

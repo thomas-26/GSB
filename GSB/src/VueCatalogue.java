@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueCatalogue qui affiche le catalogue
 public class VueCatalogue extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
@@ -19,6 +20,7 @@ public class VueCatalogue extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1L;
 
+    // Constructeur qui prend en paramètre la fenêtre
     public VueCatalogue(JFrame frame) {
         this.frame = frame;
 

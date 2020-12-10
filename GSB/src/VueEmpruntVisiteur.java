@@ -9,16 +9,16 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueEmpruntVisiteur qui affiche les emprunts des visiteurs
 public class VueEmpruntVisiteur extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton btnRetour;
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 1L;
 
+    // Constructeur qui prend en paramètre la fenêtre
     public VueEmpruntVisiteur(JFrame frame) {
         this.frame = frame;
 
@@ -41,6 +41,7 @@ public class VueEmpruntVisiteur extends JPanel implements ActionListener {
             tableModel.addRow(donnees[i]);
         }
         
+       // bouton de retour sur l'ancienne page
         btnRetour = new JButton("Retour");
         btnRetour.setBounds(175, 270, 150, 25);
         btnRetour.setBackground(new Color(59, 89, 182));

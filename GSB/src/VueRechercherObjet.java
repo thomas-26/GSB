@@ -5,16 +5,16 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueRechercherObjet qui affiche la page de recherche pour un matériel
 public class VueRechercherObjet extends JPanel implements ActionListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JButton rechercherButton;
 	private JLabel welcome;
 	private JTextField jtfNumero;
 	private JFrame frame;
 
+	// Constructeur VueRechercherObjet qui prend en paramètre la fenêtre
 	public VueRechercherObjet(JFrame frame) {
 		this.frame = frame;
 		this.setLayout(null);
@@ -51,11 +51,16 @@ public class VueRechercherObjet extends JPanel implements ActionListener {
         this.frame.revalidate();
         if(!jtfNumero.getText().equals("")) {
 		int numero =  Integer.parseInt(jtfNumero.getText());
+			// si le numéro est présent dans les matériels
 			if(Database.rechercherObjet(numero)) {
-				JOptionPane.showMessageDialog(rechercherButton, "Le matÃ©riel est prÃ©sent dans le catalogue !", "FÃ©licitation", JOptionPane.INFORMATION_MESSAGE);
-			}//t
+				JOptionPane.showMessageDialog(rechercherButton, "Le matériel est présent dans le catalogue !", "Félicitation", JOptionPane.INFORMATION_MESSAGE);
+				VueAfficherRechercheMateriel recherche = new VueAfficherRechercheMateriel(frame,numero);
+				frame.setContentPane(recherche);
+	            frame.revalidate();	
+			}
+			// sinon
 			else {
-				JOptionPane.showMessageDialog(rechercherButton, "Le matÃ©riel n'existe pas dans le catalogue !", "Erreur", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(rechercherButton, "Le matériel n'existe pas dans le catalogue !", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
         }
 	}

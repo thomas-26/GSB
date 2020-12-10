@@ -15,10 +15,9 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.Properties;
 
+// Classe VueReservation qui affiche l'objet à réserver à confirmer
 public class VueReservation extends JPanel implements ActionListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JButton emprunterButton;
 	private JLabel welcome, idObjet, nomObjet;
@@ -26,6 +25,7 @@ public class VueReservation extends JPanel implements ActionListener {
 	private JCheckBox confirm;
 	private String login;
 	
+	// Constructeur qui prend en paramètre la fenêtre, le login du visiteur, l'id de l'objet et son nom
 	public VueReservation(JFrame frame, String login, int id, String nom) {
 		this.login = login;
 		this.frame = frame;

@@ -6,10 +6,9 @@ import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueConnexion qui affiche le formulaire de connexion
 public class VueConnexion extends JPanel implements ActionListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JTextField userText;
 	private JButton loginButton;
@@ -17,6 +16,7 @@ public class VueConnexion extends JPanel implements ActionListener {
 	private JPasswordField passwordText;
 	private JFrame frame;
 
+	// Constructeur qui prend en paramètre la fenêtre
 	public VueConnexion(JFrame frame) {
 		this.frame = frame;
 		this.setLayout(null);

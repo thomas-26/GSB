@@ -1,5 +1,6 @@
 import java.util.Date;
 
+// Classe LesObjets qui affiche les objets empruntés avec leur emprunteur
 public class LesObjets {
 	private int id;
 	private String nom, login;

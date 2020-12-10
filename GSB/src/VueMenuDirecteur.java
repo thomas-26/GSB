@@ -5,10 +5,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueMenuDirecteur qui s'affiche pour le directeur
 public class VueMenuDirecteur extends JPanel implements ActionListener {
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 1L;
     private JMenuBar barre;
     private JMenu menu;
@@ -18,6 +17,7 @@ public class VueMenuDirecteur extends JPanel implements ActionListener {
     private JLabel lblLogin;
     private JFrame frame;
 
+    // Constructeur qui prend en paramètre la fenêtre et le login du directeur 
     public VueMenuDirecteur(JFrame frame, String login) {
     	this.frame = frame;
         barre = new JMenuBar();
@@ -34,7 +34,7 @@ public class VueMenuDirecteur extends JPanel implements ActionListener {
         
         lblDirecteur = new JLabel("Connecté en tant que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
-        lblLogin.setForeground(Color.GREEN.darker());
+        lblLogin.setForeground(new Color(59, 89, 182));
                 
         itemStatistique.addActionListener(new VueStatistique(frame));
         

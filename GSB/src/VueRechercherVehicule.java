@@ -5,16 +5,16 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//Classe VueRechercherVehicule qui affiche la page de recherche pour un véhicule
 public class VueRechercherVehicule extends JPanel implements ActionListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JButton rechercherButton;
 	private JLabel welcome;
 	private JTextField jtfNumero;
 	private JFrame frame;
 
+	// Constructeur VueRechercherVehicule qui prend en paramètre la fenêtre
 	public VueRechercherVehicule(JFrame frame) {
 		this.frame = frame;
 		this.setLayout(null);
@@ -51,11 +51,16 @@ public class VueRechercherVehicule extends JPanel implements ActionListener {
         this.frame.revalidate();
         if(!jtfNumero.getText().equals("")) {
 		int numero =  Integer.parseInt(jtfNumero.getText());
+			// si le numéro est présent dans les matériels
 			if(Database.rechercherVehicule(numero)) {
-				JOptionPane.showMessageDialog(rechercherButton, "Le vÃ©hicule est prÃ©sent dans le catalogue !", "FÃ©licitation", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(rechercherButton, "Le véhicule est prÃ©sent dans le catalogue !", "Félicitation", JOptionPane.INFORMATION_MESSAGE);
+				VueAfficherRerchercheVehicule recherche = new VueAfficherRerchercheVehicule(frame,numero);
+				frame.setContentPane(recherche);
+	            frame.revalidate();	
 			}
+			// sinon
 			else {
-				JOptionPane.showMessageDialog(rechercherButton, "Le vÃ©hicule n'existe pas dans le catalogue !", "Erreur", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(rechercherButton, "Le véhicule n'existe pas dans le catalogue !", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
         }
 	}

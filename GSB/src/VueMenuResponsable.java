@@ -6,11 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+// Classe VueMenuResponsable qui affiche le menu pour le responsable
 public class VueMenuResponsable extends JPanel implements ActionListener {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private JMenuBar barre;
     private JMenu menu, sousmenu, sousmenu2, ajouter;
@@ -21,6 +19,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
     private JFrame frame;
     private int i;
 
+    // Constructeur qui prend en param�tre  la fen�tre et le login du responsable
     public VueMenuResponsable(JFrame frame, String login) {
         this.frame = frame;
         barre = new JMenuBar();
@@ -28,7 +27,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
 
         lblVisiteur = new JLabel("Connecté en tant que " + Database.getRole(login) + " : ");
         lblLogin = new JLabel(login);
-        lblLogin.setForeground(Color.GREEN.darker());
+        lblLogin.setForeground(new Color(59, 89, 182));
 
         /* bouton de déconnexion */
         deconnexion = new JButton("Déconnexion");
@@ -38,6 +37,7 @@ public class VueMenuResponsable extends JPanel implements ActionListener {
         deconnexion.setFont(new Font("Arial", Font.BOLD, 12));
         deconnexion.addActionListener(this);
 
+        // sous menus dynamiques
         sousmenu = new JMenu("Supprimer un produit");
         sousmenu2 = new JMenu("Supprimer un véhicule");
         

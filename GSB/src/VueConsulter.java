@@ -9,17 +9,17 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueConsulter qui affiche les matériels empruntés du visiteur connecté
 public class VueConsulter extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton btnRetour;
     private String login;
-    /*
-     *
-     */
+
     private static final long serialVersionUID = 1L;
 
+    // Constructeur qui prend en paramètre la fenêtre et le login du visiteur connecté
     public VueConsulter(JFrame frame, String login) {
         this.frame = frame;
         this.login = login;
@@ -51,6 +51,7 @@ public class VueConsulter extends JPanel implements ActionListener {
             tableModel.addRow(donnees[i]);
         }
         
+        // bouton retour qui renvoie au menu du visiteur
         btnRetour = new JButton("Retour");
         btnRetour.setBounds(175, 270, 150, 25);
         btnRetour.setBackground(new Color(59, 89, 182));

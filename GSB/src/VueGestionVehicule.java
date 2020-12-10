@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//Classe VueGestion qui affiche la page de suppression d'un véhicule
 public class VueGestionVehicule extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
@@ -13,11 +14,10 @@ public class VueGestionVehicule extends JPanel implements ActionListener {
     private JButton supprimerButton;
     private String nomLibelle;
     private String login;
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 1L;
 
+    // Constructeur qui prend en paramètre la fenêtre, le libelle du véhicule et le login du visiteur qui l'emprunte
     public VueGestionVehicule(JFrame frame, String nomLibelle, String login) {
         this.frame = frame;
         this.nomLibelle = nomLibelle;
@@ -48,6 +48,7 @@ public class VueGestionVehicule extends JPanel implements ActionListener {
             tableModel.addRow(donnees[i]);
         }
 
+        // bouton de suppression
         supprimerButton = new JButton("Supprimer");
         supprimerButton.setBounds(175, 270, 150, 25);
         supprimerButton.setBackground(new Color(59, 89, 182));

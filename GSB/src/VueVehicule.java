@@ -6,17 +6,17 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueVehicule qui affiche les véhicules
 public class VueVehicule extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton reserverButton;
     private String nomLibelle, login;
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 1L;
 
+    // Constructeur VueVehicule qui prend en paramètre la fenêtre, le libellé du véhicule et le login du visiteur
     public VueVehicule(JFrame frame, String nomLibelle, String login) {
         this.login = login;
         this.frame = frame;
@@ -47,6 +47,7 @@ public class VueVehicule extends JPanel implements ActionListener {
             tableModel.addRow(donnees[i]);
         }
 
+        // bouton de réservation
         reserverButton = new JButton("Réserver");
         reserverButton.setBounds(175, 270, 150, 25);
         reserverButton.setBackground(new Color(59, 89, 182));

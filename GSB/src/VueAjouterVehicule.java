@@ -178,7 +178,6 @@ public class VueAjouterVehicule extends JPanel implements ActionListener {
 			* il faut que l'id saisit ne soit pas déjà dans la base de données sql pour
 			* pouvoir procéder
 		    */
-			
 			if (Database.rechercherVehicule(code) == false) {
 				if(immatriculation.matches("[A-Za-z]{2}-[1-9]{3}-[A-Za-z]{2}")) {
 					Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule);

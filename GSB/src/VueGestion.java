@@ -10,17 +10,17 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+// Classe VueGestion qui affiche la page de suppression d'un matériel
 public class VueGestion extends JPanel implements ActionListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton supprimerButton;
     private String nomLibelle;
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 1L;
 
+    // Constructeur qui prend en paramètre la fenêtre et le libellé du matériel
     public VueGestion(JFrame frame, String nomLibelle) {
         this.frame = frame;
         this.nomLibelle = nomLibelle;
@@ -48,7 +48,7 @@ public class VueGestion extends JPanel implements ActionListener {
             tableModel.addRow(donnees[i]);
         }
         
-        
+        // bouton de suppression 
         supprimerButton = new JButton("Supprimer");
         supprimerButton.setBounds(175, 270, 150, 25);
         supprimerButton.setBackground(new Color(59, 89, 182));
