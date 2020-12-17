@@ -260,7 +260,7 @@ public class Database {
 		ArrayList<Vehicule> lesVehicules = new ArrayList<Vehicule>();
 		try {
 			connexionBdd();
-			String rsObjets = "select v.code, immat, modele, marque, nbplaces from vehicule v, type_vehicule where v.code = type_vehicule.code and libelle = ?;";
+			String rsObjets = "select v.code, immat, modele, marque, nbplaces from vehicule v, type_vehicule t where v.codevehicule = t.code and libelle = ?;";
 			preparedStatement = connexion.prepareStatement(rsObjets);
 			preparedStatement.setString(1, nomLibelle);
 			resultVehicules = preparedStatement.executeQuery();
@@ -633,9 +633,8 @@ public class Database {
 		try {
 			connexionBdd();
 			String rsNbObjets = "SELECT COUNT(idobjet) as nbEmprunts, idEmprunt, idobjet, nom\n" + 
-					"	FROM emprunt E, objet O, materiel M\n" + 
+					"	FROM emprunt E, objet O\n" + 
 					"	WHERE E.idObjet = O.id\n" + 
-					"	AND O.id = M.code\n" + 
 					"	GROUP BY idobjet\n" + 
 					"	ORDER BY nbEmprunts DESC;";
 			preparedStatement = connexion.prepareStatement(rsNbObjets);

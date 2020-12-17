@@ -17,13 +17,18 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel; 
+import javax.swing.JPanel;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 // Classe VueStatistique qui affiche les statistiques
@@ -116,16 +121,120 @@ public class VueStatistique extends JPanel implements ActionListener {
 	public void topdf() {
 		Document document = new Document();
 	      try {
-	    	 String filename = "C:\\Users\\tbonneville\\Documents\\pdf\\Statistiques.pdf";
+	    	 String filename = "C:\\Users\\tvercasson\\Documents\\pdf\\Statistiques.pdf";
 	         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filename));
 	         document.open();
 	         Image img = Image.getInstance("src/gsb.png");
-	         img.scaleAbsolute(200f, 120f);
-//	         Font pageNumberFont = new Font(Arial, 9, Font.BOLD);
-	         
+	         img.scaleAbsolute(150f, 90f);	    
 	         document.add(img);
-	         document.add(new Paragraph("Nombre d'objets : " +  Database.getNbObjets()));
-	         document.add(new Paragraph("Nombre d'objets empruntés : " +  Database.getNbObjetsEmpruntes()));
+
+	         /* titre t1 */
+	         PdfPTable table = new PdfPTable(2);
+	         PdfPCell c1 = new PdfPCell(new Phrase("nombre d'emprunts", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c1.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table.addCell(c1);
+	         c1 = new PdfPCell(new Phrase("login visiteur", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c1.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table.addCell(c1);
+	         table.setHeaderRows(1);
+
+	         /* création du tableau du nombre d'objets emprunté pour chaque visiteur */
+	         for (int i = 0; i < Database.getEmpruntsParVisiteur().size(); i++) {
+	        	 String nb = Integer.toString(Database.getEmpruntsParVisiteur().get(i).getNbEmprunt()); 
+	        	 String loginv = Database.getEmpruntsParVisiteur().get(i).getLoginVisiteur();
+	        	 table.addCell(nb);
+		         table.addCell(loginv);
+	         }
+
+	         /* titre t2 */
+	         PdfPTable table2 = new PdfPTable(4);
+	         PdfPCell c2 = new PdfPCell(new Phrase("nombre d'emprunts", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c2.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table2.addCell(c2);
+	         c2 = new PdfPCell(new Phrase("id emprunt", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c2.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table2.addCell(c2);
+	         c2 = new PdfPCell(new Phrase("id objet", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c2.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table2.addCell(c2);
+	         c2 = new PdfPCell(new Phrase("nom objet", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c2.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table2.addCell(c2);
+	         table2.setHeaderRows(1);
+	         
+	         /* création du tableau du nombre de matériels empruntés (triés) */
+	         for (int i = 0;i < Database.getNbEmpruntsParObjet().size(); i++) {
+	        	 String nb = Integer.toString(Database.getNbEmpruntsParObjet().get(i).getNbEmprunt());
+	        	 String idEmprunt = Integer.toString(Database.getNbEmpruntsParObjet().get(i).getIdEmprunt());
+	        	 String idObjet = Integer.toString(Database.getNbEmpruntsParObjet().get(i).getIdObjet());
+	        	 String nomObjet = Database.getNbEmpruntsParObjet().get(i).getNom();
+	        	 
+	        	 table2.addCell(nb);
+	        	 table2.addCell(idEmprunt);
+	        	 table2.addCell(idObjet);
+	        	 table2.addCell(nomObjet);
+	         }
+	         
+	         /* titre 3 */
+	         PdfPTable table3 = new PdfPTable(5);
+	         PdfPCell c3 = new PdfPCell(new Phrase("id objet", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c3.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table3.addCell(c3);
+	         PdfPCell c4 = new PdfPCell(new Phrase("nom objet", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c4.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table3.addCell(c4);
+	         PdfPCell c5 = new PdfPCell(new Phrase("date début", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c5.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table3.addCell(c5);
+	         PdfPCell c6 = new PdfPCell(new Phrase("date fin", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c6.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table3.addCell(c6);
+	         PdfPCell c7 = new PdfPCell(new Phrase("login visiteur", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+	         c7.setBackgroundColor(new BaseColor(102, 163, 211));
+	         table3.addCell(c7);
+	         table3.setHeaderRows(1);
+	         
+	         /* création du tableau récapitulatif des objets empruntés */
+	         for (int i = 0; i < Database.getLesObjetsEmpruntes().size(); i++) {
+	        	 String idobjet = Integer.toString(Database.getLesObjetsEmpruntes().get(i).getId());
+	        	 String nomobjet = Database.getLesObjetsEmpruntes().get(i).getNom();
+	        	 
+	        	 /* récupération de la date de type Date, puis, conversion en String pour pouvoir la manipuler */
+	        	 Date datedebut = Database.getLesObjetsEmpruntes().get(i).getDateDebut();
+	      	     String pattern = "yyyy-MM-dd";
+	        	 DateFormat df = new SimpleDateFormat(pattern);
+	        	 String formateddebut = df.format(datedebut);
+	        	 
+	        	 /* meme manipulation */
+	        	 Date datefin = Database.getLesObjetsEmpruntes().get(i).getDateFin();
+	        	 String formatedfin = df.format(datefin);
+	        	 
+	        	 /* login du visiteur */
+	        	 String loginv = Database.getLesObjetsEmpruntes().get(i).getLogin();
+	        	 
+	        	 table3.addCell(idobjet);
+	        	 table3.addCell(nomobjet);
+	        	 table3.addCell(formateddebut);
+	        	 table3.addCell(formatedfin);
+	        	 table3.addCell(loginv);
+	         }
+	         
+	         Paragraph titre = new Paragraph("Statistiques des matériels",  FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18 , BaseColor.BLACK));
+	         titre.setAlignment(Paragraph.ALIGN_CENTER);
+	         
+	         /* ajout des éléments au document créée */
+	         document.add(titre);
+	         document.add(new Paragraph(("\n")));
+	         document.add(new Paragraph("               Nombre d'objets présents : " +  Database.getNbObjets()));
+	         document.add(new Paragraph("               Nombre d'objets empruntés : " +  Database.getNbObjetsEmpruntes()));
+	         document.add(new Paragraph(("\n")));
+	         document.add(table);
+	         document.add(new Paragraph(("\n")));
+	         document.add(table2);
+	         document.add(new Paragraph(("\n")));
+	         document.add(table3);
+	         
+	         /* fermeture des flux */
 	         document.close();
 	         writer.close();
 	      } catch (DocumentException e) {
@@ -137,7 +246,7 @@ public class VueStatistique extends JPanel implements ActionListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}	
+	}		
 
 	public void actionPerformed(ActionEvent e) {
 		this.frame.setContentPane(this);
@@ -208,7 +317,9 @@ public class VueStatistique extends JPanel implements ActionListener {
 		                dateFin = Database.getLesDatesEmprunts().get(i).getDateFin();   
 
 		                try {
-		                	 String sDate1="2020-12-10";  
+		                	 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+		                	 Date date = new Date();  
+		                	 String sDate1 = formatter.format(date);  
 				             Date date1=new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
 				             // si un emprunt est actuellement en cours
 				             if(date1.before(dateFin) && date1.after(dateDebut)) {

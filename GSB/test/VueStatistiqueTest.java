@@ -9,13 +9,13 @@ class VueStatistiqueTest {
 	// fonction qui test si le nombre d'objet est correct
 	@Test
 	void testGetnbObjets() {
-		Assert.assertEquals("Nombre d'états incorrect",Database.getNbObjets(),2);
+		Assert.assertEquals("Nombre d'états incorrect",Database.getNbObjets(),5);
 	}
 
 	// fonction qui test si le nombre d'objet emprunté est correct
 	@Test
 	void testGetNbObjetsEmpruntes() {
-		Assert.assertEquals("Nombre d'états incorrect",Database.getNbObjetsEmpruntes(),2);
+		Assert.assertEquals("Nombre d'états incorrect",Database.getNbObjetsEmpruntes(),6);
 	}
 
 }

@@ -39,8 +39,8 @@ public class VueVehicule extends JPanel implements ActionListener {
 
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
         for (int i = 0; i < Database.getLesVehicules(nomLibelle).size(); i++) {
-            donnees[i][0] = Database.getLesVehicules(nomLibelle).get(i).getCode();
-            donnees[i][2] = Database.getLesVehicules(nomLibelle).get(i).getImmatriculation();
+            donnees[i][0] = Database.getLesVehicules(nomLibelle).get(i).getId();
+            donnees[i][2] = Database.getLesVehicules(nomLibelle).get(i).getNom();
             donnees[i][1] = Database.getLesVehicules(nomLibelle).get(i).getModele();
             donnees[i][3] = Database.getLesVehicules(nomLibelle).get(i).getMarque();
             donnees[i][4] = Database.getLesVehicules(nomLibelle).get(i).getNbPlaces();

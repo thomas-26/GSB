@@ -185,7 +185,7 @@ public class VueAjouterVehicule extends JPanel implements ActionListener {
 					/*
 					 * appelle la boite de dialogue en fonction du résultat renvoyé par la fonction
 					 */
-					if (Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule) == 2) {
+					if (Database.ajouterVehicule(code, immatriculation, modele, marque, nbplaces, typevehicule) == 1) {
 						added(); // ne rentre pas ici
 					}
 				} else {

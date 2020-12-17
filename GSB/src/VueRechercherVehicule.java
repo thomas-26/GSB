@@ -20,7 +20,7 @@ public class VueRechercherVehicule extends JPanel implements ActionListener {
 		this.setLayout(null);
 		
 		/* texte informatif */
-		welcome = new JLabel("Rechercher un vÃ©hicule (numÃ©ro)");
+		welcome = new JLabel("Rechercher un véhicule (numéro)");
 		welcome.setFont(new Font("Arial", Font.BOLD, 14));
 		welcome.setBounds(130, 40, 380, 100);
 		
@@ -53,7 +53,7 @@ public class VueRechercherVehicule extends JPanel implements ActionListener {
 		int numero =  Integer.parseInt(jtfNumero.getText());
 			// si le numéro est présent dans les matériels
 			if(Database.rechercherVehicule(numero)) {
-				JOptionPane.showMessageDialog(rechercherButton, "Le véhicule est prÃ©sent dans le catalogue !", "Félicitation", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(rechercherButton, "Le véhicule est présent dans le catalogue !", "Félicitation", JOptionPane.INFORMATION_MESSAGE);
 				VueAfficherRerchercheVehicule recherche = new VueAfficherRerchercheVehicule(frame,numero);
 				frame.setContentPane(recherche);
 	            frame.revalidate();	

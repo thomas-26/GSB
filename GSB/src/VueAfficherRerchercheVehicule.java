@@ -41,8 +41,8 @@ public class VueAfficherRerchercheVehicule extends JPanel implements ActionListe
         
         /* ajout à notre tableau à 2 dimensions des informations du visiteur */
         for (int i = 0; i < Database.getUnVehicule(numero).size(); i++) {
-            donnees[i][0] = Database.getUnVehicule(numero).get(i).getCode();
-            donnees[i][1] = Database.getUnVehicule(numero).get(i).getImmatriculation();
+            donnees[i][0] = Database.getUnVehicule(numero).get(i).getId();
+            donnees[i][1] = Database.getUnVehicule(numero).get(i).getNom();
             donnees[i][2] = Database.getUnVehicule(numero).get(i).getModele();
             donnees[i][3] = Database.getUnVehicule(numero).get(i).getNbPlaces();
             donnees[i][4] = Database.getUnVehicule(numero).get(i).getCodeType();
